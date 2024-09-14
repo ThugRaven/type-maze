@@ -4,18 +4,31 @@ import Image from 'next/image';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
 
 const text = 'The quick brown fox jumps over the lazy dog';
+const regex = new RegExp('^[a-zA-Z0-9 &,._-]$');
 
 export default function Home() {
 	const [index, setIndex] = useState(0);
+	const [errorsArray, setErrorsArray] = useState<boolean[]>(
+		new Array(text.length).fill(false),
+	);
 
 	const handleKeyDown = useCallback(
 		(e: KeyboardEvent) => {
 			const { key } = e;
 			console.log(key, e);
+			if (regex.test(key)) {
+				setErrorsArray((array) =>
+					array.map((error, i) => {
+						if (i === index) {
+							error = key === text[index] && !error ? false : true;
+						}
+						return error;
+					}),
+				);
+			}
 
 			if (key === text[index]) {
 				setIndex((index) => index + 1);
-				console.log(index);
 			}
 		},
 		[index],
@@ -38,25 +51,37 @@ export default function Home() {
 		const result: ReactElement[] = [];
 		for (let i = startIndex; i < length; i++) {
 			const char = text[i];
-			if (char === ' ') {
-				result.push(<span key={`chars-${i}`}>{chars.join('')}</span>);
-				chars = [];
+			if (errorsArray[i] && i != index) {
+				if (chars.length > 0) {
+					result.push(<span key={`chars-${i}`}>{chars.join('')}</span>);
+					chars = [];
+				}
 				result.push(
-					<span
-						key={`space-${i}`}
-						className={`${
-							style === 'completed'
-								? 'text-gray-700'
-								: style === 'selected'
-								? 'text-white'
-								: 'text-gray-700'
-						}`}
-					>
-						•
+					<span key={`errors-${i}`} className="text-red-500">
+						{char === ' ' ? '•' : char}
 					</span>,
 				);
 			} else {
-				chars.push(char);
+				if (char === ' ') {
+					result.push(<span key={`chars-${i}`}>{chars.join('')}</span>);
+					chars = [];
+					result.push(
+						<span
+							key={`space-${i}`}
+							className={`${
+								style === 'completed'
+									? 'text-gray-700'
+									: style === 'selected'
+									? 'text-white'
+									: 'text-gray-700'
+							}`}
+						>
+							•
+						</span>,
+					);
+				} else {
+					chars.push(char);
+				}
 			}
 		}
 		if (chars.length > 0) {

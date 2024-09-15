@@ -11,16 +11,47 @@ export default function Home() {
 	const [errorsArray, setErrorsArray] = useState<boolean[]>(
 		new Array(text.length).fill(false),
 	);
+	const [startTime, setStartTime] = useState<Date | null>(null);
+	const [endTime, setEndTime] = useState<Date | null>(null);
+	const [textWpm, setTextWpm] = useState(0);
+	const [currentTime, setCurrentTime] = useState<Date | null>(null);
+	const [correctCharsArray, setCorrectCharsArray] = useState<boolean[]>(
+		new Array(text.length).fill(false),
+	);
+
+	const correctChars = correctCharsArray.filter((value) => value).length;
+	const incorrectChars = errorsArray.filter((value) => value).length;
+	const totalTime =
+		startTime && currentTime
+			? (currentTime.getTime() - startTime.getTime()) / 1000
+			: 0;
+	const currentWpm = correctChars / 5 / (totalTime / 60);
+	// console.log(currentTime?.getTime(), startTime?.getTime(), totalTime);
 
 	const handleKeyDown = useCallback(
 		(e: KeyboardEvent) => {
 			const { key } = e;
 			console.log(key, e);
 			if (regex.test(key)) {
+				if (startTime == null) {
+					setStartTime(new Date());
+				}
+
 				setErrorsArray((array) =>
 					array.map((error, i) => {
 						if (i === index) {
 							error = key === text[index] && !error ? false : true;
+
+							if (key === text[index] && !error) {
+								setCorrectCharsArray((array) =>
+									array.map((value, i) => {
+										if (i === index) {
+											value = key === text[index] ? true : false;
+										}
+										return value;
+									}),
+								);
+							}
 						}
 						return error;
 					}),
@@ -29,9 +60,19 @@ export default function Home() {
 
 			if (key === text[index]) {
 				setIndex((index) => index + 1);
+
+				if (index === text.length - 1) {
+					setEndTime(new Date());
+					const fullTime = startTime
+						? (new Date().getTime() - startTime.getTime()) / 1000
+						: 0;
+					console.log('end', fullTime);
+
+					setTextWpm(correctChars / 5 / (fullTime / 60));
+				}
 			}
 		},
-		[index],
+		[index, startTime, correctChars],
 	);
 
 	useEffect(() => {
@@ -41,6 +82,12 @@ export default function Home() {
 			window.removeEventListener('keydown', handleKeyDown);
 		};
 	}, [handleKeyDown]);
+
+	useEffect(() => {
+		setInterval(() => {
+			setCurrentTime(new Date());
+		}, 100);
+	}, []);
 
 	const getStyledText = (
 		startIndex: number,
@@ -95,6 +142,24 @@ export default function Home() {
 		<div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
 			<main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
 				<div className="font-mono">
+					{/* <div>
+						{new Intl.DateTimeFormat('en-US', {
+							timeStyle: 'full',
+						}).format(endTime - startTime)}
+					</div> */}
+					{/* <div>
+						{new Date((endTime - startTime) / 1000).toLocaleTimeString()}
+					</div> */}
+					<div>Correct chars: {correctChars}</div>
+					<div>Incorrect chars: {incorrectChars}</div>
+					<div>Current wpm: {Math.round(currentWpm)}</div>
+					<div>Wpm: {Math.round(textWpm)}</div>
+					<div>
+						{startTime &&
+							endTime &&
+							(endTime.getTime() - startTime.getTime()) / 1000}
+					</div>
+					<div>{totalTime}</div>
 					<span className="text-gray-700">
 						{getStyledText(0, index, 'completed')}
 					</span>

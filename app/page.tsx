@@ -29,16 +29,20 @@ export default function Home() {
 		(e: KeyboardEvent) => {
 			const { key } = e;
 			console.log(key, e);
-			if (regex.test(key)) {
-				if (startTime == null) {
-					setStartTime(new Date());
-				}
+			if (!regex.test(key)) {
+				return;
+			}
 
-				if (key === text[index] && !errorsArray[index]) {
+			if (startTime == null) {
+				setStartTime(new Date());
+			}
+
+			if (!errorsArray[index]) {
+				if (key === text[index]) {
 					console.log('correct');
 
 					setCorrectChars((c) => c + 1);
-				} else if (!errorsArray[index]) {
+				} else {
 					console.log('incorrect');
 
 					setErrorsArray((array) =>

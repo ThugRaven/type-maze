@@ -15,11 +15,8 @@ export default function Home() {
 	const [endTime, setEndTime] = useState<Date | null>(null);
 	const [textWpm, setTextWpm] = useState(0);
 	const [currentTime, setCurrentTime] = useState<Date | null>(null);
-	const [correctCharsArray, setCorrectCharsArray] = useState<boolean[]>(
-		new Array(text.length).fill(false),
-	);
+	const [correctChars, setCorrectChars] = useState(0);
 
-	const correctChars = correctCharsArray.filter((value) => value).length;
 	const incorrectChars = errorsArray.filter((value) => value).length;
 	const totalTime =
 		startTime && currentTime
@@ -37,25 +34,21 @@ export default function Home() {
 					setStartTime(new Date());
 				}
 
-				setErrorsArray((array) =>
-					array.map((error, i) => {
-						if (i === index) {
-							error = key === text[index] && !error ? false : true;
+				if (key === text[index] && !errorsArray[index]) {
+					console.log('correct');
 
-							if (key === text[index] && !error) {
-								setCorrectCharsArray((array) =>
-									array.map((value, i) => {
-										if (i === index) {
-											value = key === text[index] ? true : false;
-										}
-										return value;
-									}),
-								);
-							}
-						}
-						return error;
-					}),
-				);
+					setCorrectChars((c) => c + 1);
+				} else if (!errorsArray[index]) {
+					console.log('incorrect');
+
+					setErrorsArray((array) =>
+						array.map((error, i) => {
+							if (i === index && !error) {
+								return true;
+							} else return error;
+						}),
+					);
+				}
 			}
 
 			if (key === text[index]) {
@@ -72,22 +65,28 @@ export default function Home() {
 				}
 			}
 		},
-		[index, startTime, correctChars],
+		[index, startTime, correctChars, errorsArray],
 	);
 
 	useEffect(() => {
+		console.log('addEventListener');
 		window.addEventListener('keydown', handleKeyDown);
 
 		return () => {
+			console.log('removeEventListener');
 			window.removeEventListener('keydown', handleKeyDown);
 		};
 	}, [handleKeyDown]);
 
 	useEffect(() => {
+		if (!startTime) {
+			return;
+		}
+
 		setInterval(() => {
 			setCurrentTime(new Date());
 		}, 100);
-	}, []);
+	}, [startTime]);
 
 	const getStyledText = (
 		startIndex: number,

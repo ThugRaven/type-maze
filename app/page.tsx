@@ -16,6 +16,7 @@ export default function Home() {
 	const [textWpm, setTextWpm] = useState(0);
 	const [currentTime, setCurrentTime] = useState<Date | null>(null);
 	const [correctChars, setCorrectChars] = useState(0);
+	const [accuracy, setAccuracy] = useState(0);
 
 	const incorrectChars = errorsArray.filter((value) => value).length;
 	const totalTime =
@@ -58,14 +59,15 @@ export default function Home() {
 			if (key === text[index]) {
 				setIndex((index) => index + 1);
 
-				if (index === text.length - 1) {
+				if (index + 1 === text.length) {
 					setEndTime(new Date());
 					const fullTime = startTime
 						? (new Date().getTime() - startTime.getTime()) / 1000
 						: 0;
 					console.log('end', fullTime);
 
-					setTextWpm(correctChars / 5 / (fullTime / 60));
+					setTextWpm((correctChars + 1) / 5 / (fullTime / 60));
+					setAccuracy((correctChars + 1) / text.length);
 				}
 			}
 		},
@@ -157,6 +159,7 @@ export default function Home() {
 					<div>Incorrect chars: {incorrectChars}</div>
 					<div>Current wpm: {Math.round(currentWpm)}</div>
 					<div>Wpm: {Math.round(textWpm)}</div>
+					<div>Acc: {accuracy > 0 ? Math.round(accuracy * 100) : '-'}%</div>
 					<div>
 						{startTime &&
 							endTime &&

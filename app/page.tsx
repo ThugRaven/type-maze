@@ -30,6 +30,20 @@ export default function Home() {
 		(e: KeyboardEvent) => {
 			const { key } = e;
 			console.log(key, e);
+
+			if (key === 'Tab') {
+				setIndex(0);
+				setErrorsArray(new Array(text.length).fill(false));
+				setStartTime(null);
+				setEndTime(null);
+				setTextWpm(0);
+				setCurrentTime(null);
+				setCorrectChars(0);
+				setAccuracy(0);
+				e.preventDefault();
+				return;
+			}
+
 			if (!regex.test(key)) {
 				return;
 			}

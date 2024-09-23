@@ -1,7 +1,8 @@
 'use client';
 
+import { TypedText } from '@/components/TypedText/TypedText';
 import Image from 'next/image';
-import { ReactElement, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const text = 'The quick brown fox jumps over the lazy dog';
 const regex = new RegExp('^[a-zA-Z0-9 &,._-]$');
@@ -108,55 +109,6 @@ export default function Home() {
 		}, 100);
 	}, [startTime]);
 
-	const getStyledText = (
-		startIndex: number,
-		length: number,
-		style: 'completed' | 'selected' | 'notcompleted',
-	) => {
-		let chars: string[] = [];
-		const result: ReactElement[] = [];
-		for (let i = startIndex; i < length; i++) {
-			const char = text[i];
-			if (errorsArray[i] && i != index) {
-				if (chars.length > 0) {
-					result.push(<span key={`chars-${i}`}>{chars.join('')}</span>);
-					chars = [];
-				}
-				result.push(
-					<span key={`errors-${i}`} className="text-red-500">
-						{char === ' ' ? '•' : char}
-					</span>,
-				);
-			} else {
-				if (char === ' ') {
-					result.push(<span key={`chars-${i}`}>{chars.join('')}</span>);
-					chars = [];
-					result.push(
-						<span
-							key={`space-${i}`}
-							className={`${
-								style === 'completed'
-									? 'text-gray-700'
-									: style === 'selected'
-									? 'text-white'
-									: 'text-gray-700'
-							}`}
-						>
-							•
-						</span>,
-					);
-				} else {
-					chars.push(char);
-				}
-			}
-		}
-		if (chars.length > 0) {
-			result.push(<span key={`chars-${length}`}>{chars.join('')}</span>);
-		}
-
-		return result;
-	};
-
 	return (
 		<div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
 			<main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -180,13 +132,7 @@ export default function Home() {
 							(endTime.getTime() - startTime.getTime()) / 1000}
 					</div>
 					<div>{totalTime}</div>
-					<span className="text-gray-700">
-						{getStyledText(0, index, 'completed')}
-					</span>
-					<span className="relative before:absolute before:-bottom-px before:w-full before:bg-white before:h-px">
-						{getStyledText(index, index + 1, 'selected')}
-					</span>
-					<span>{getStyledText(index + 1, text.length, 'notcompleted')}</span>
+					<TypedText text={text} index={index} errorsArray={errorsArray} />
 				</div>
 				<Image
 					className="dark:invert"

@@ -1,92 +1,34 @@
 'use client';
 
 import { TypedText } from '@/components/TypedText/TypedText';
+import { TypingContainer } from '@/components/TypingContainer/TypingContainer';
+import TypingController from '@/components/TypingController/TypingController';
+import useTypeWord from '@/hooks/useTypeWord';
 import Image from 'next/image';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 
 const text = 'The quick brown fox jumps over the lazy dog';
-const regex = new RegExp('^[a-zA-Z0-9 &,._-]$');
 
 export default function Home() {
-	const [index, setIndex] = useState(0);
-	const [errorsArray, setErrorsArray] = useState<boolean[]>(
-		new Array(text.length).fill(false),
-	);
-	const [startTime, setStartTime] = useState<Date | null>(null);
-	const [endTime, setEndTime] = useState<Date | null>(null);
-	const [textWpm, setTextWpm] = useState(0);
-	const [currentTime, setCurrentTime] = useState<Date | null>(null);
-	const [correctChars, setCorrectChars] = useState(0);
-	const [accuracy, setAccuracy] = useState(0);
-
-	const incorrectChars = errorsArray.filter((value) => value).length;
-	const totalTime =
-		startTime && currentTime
-			? (currentTime.getTime() - startTime.getTime()) / 1000
-			: 0;
-	const currentWpm = correctChars / 5 / (totalTime / 60);
-	// console.log(currentTime?.getTime(), startTime?.getTime(), totalTime);
+	const { word, index, errorsArray, correctChars, incorrectChars, onType } =
+		useTypeWord(
+			text,
+			(typeTime) => {
+				console.log('finished in ', typeTime);
+			},
+			() => {
+				console.log('onReset');
+			},
+		);
 
 	const handleKeyDown = useCallback(
 		(e: KeyboardEvent) => {
 			const { key } = e;
 			console.log(key, e);
 
-			if (key === 'Tab') {
-				setIndex(0);
-				setErrorsArray(new Array(text.length).fill(false));
-				setStartTime(null);
-				setEndTime(null);
-				setTextWpm(0);
-				setCurrentTime(null);
-				setCorrectChars(0);
-				setAccuracy(0);
-				e.preventDefault();
-				return;
-			}
-
-			if (!regex.test(key)) {
-				return;
-			}
-
-			if (startTime == null) {
-				setStartTime(new Date());
-			}
-
-			if (!errorsArray[index]) {
-				if (key === text[index]) {
-					console.log('correct');
-
-					setCorrectChars((c) => c + 1);
-				} else {
-					console.log('incorrect');
-
-					setErrorsArray((array) =>
-						array.map((error, i) => {
-							if (i === index && !error) {
-								return true;
-							} else return error;
-						}),
-					);
-				}
-			}
-
-			if (key === text[index]) {
-				setIndex((index) => index + 1);
-
-				if (index + 1 === text.length) {
-					setEndTime(new Date());
-					const fullTime = startTime
-						? (new Date().getTime() - startTime.getTime()) / 1000
-						: 0;
-					console.log('end', fullTime);
-
-					setTextWpm((correctChars + 1) / 5 / (fullTime / 60));
-					setAccuracy((correctChars + 1) / text.length);
-				}
-			}
+			onType(key);
 		},
-		[index, startTime, correctChars, errorsArray],
+		[onType],
 	);
 
 	useEffect(() => {
@@ -98,16 +40,6 @@ export default function Home() {
 			window.removeEventListener('keydown', handleKeyDown);
 		};
 	}, [handleKeyDown]);
-
-	useEffect(() => {
-		if (!startTime) {
-			return;
-		}
-
-		setInterval(() => {
-			setCurrentTime(new Date());
-		}, 100);
-	}, [startTime]);
 
 	return (
 		<div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -123,16 +55,9 @@ export default function Home() {
 					</div> */}
 					<div>Correct chars: {correctChars}</div>
 					<div>Incorrect chars: {incorrectChars}</div>
-					<div>Current wpm: {Math.round(currentWpm)}</div>
-					<div>Wpm: {Math.round(textWpm)}</div>
-					<div>Acc: {accuracy > 0 ? Math.round(accuracy * 100) : '-'}%</div>
-					<div>
-						{startTime &&
-							endTime &&
-							(endTime.getTime() - startTime.getTime()) / 1000}
-					</div>
-					<div>{totalTime}</div>
-					<TypedText text={text} index={index} errorsArray={errorsArray} />
+					<TypedText text={word} index={index} errorsArray={errorsArray} />
+					<TypingController></TypingController>
+					<TypingContainer></TypingContainer>
 				</div>
 				<Image
 					className="dark:invert"

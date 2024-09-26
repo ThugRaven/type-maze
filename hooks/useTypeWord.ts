@@ -3,10 +3,17 @@ const regex = new RegExp('^[a-zA-Z0-9 &,._-]$');
 
 export default function useTypeWord(
 	word: string,
-	onWordTyped: (typeTime: number) => void,
+	onWordTyped: (
+		word: string,
+		typeTime: number,
+		endTime: Date,
+		correctChars: number,
+		incorrectChars: number,
+	) => void,
+	onStart: (startTime: Date) => void,
 	onReset: () => void,
 ) {
-	const wordToType = word.concat(' ');
+	const wordToType = word.length > 0 ? word.concat(' ') : word;
 	const [index, setIndex] = useState(0);
 	const [errorsArray, setErrorsArray] = useState<boolean[]>(
 		new Array(wordToType.length).fill(false),
@@ -27,10 +34,7 @@ export default function useTypeWord(
 
 		if (startTime == null && index == 0) {
 			setStartTime(new Date());
-		}
-
-		if (startTime == null && index == 0) {
-			setStartTime(new Date());
+			onStart(new Date());
 		}
 
 		if (!errorsArray[index]) {
@@ -55,12 +59,19 @@ export default function useTypeWord(
 			setIndex((index) => index + 1);
 
 			if (index + 1 === wordToType.length) {
-				const fullTime = startTime
-					? (new Date().getTime() - startTime.getTime()) / 1000
+				const endTime = new Date();
+				const typeTime = startTime
+					? (endTime.getTime() - startTime.getTime()) / 1000
 					: 0;
-				console.log('end', fullTime);
+				console.log('end', typeTime);
 				setStartTime(null);
-				onWordTyped(fullTime);
+				onWordTyped(
+					wordToType,
+					typeTime,
+					endTime,
+					correctChars + 1,
+					incorrectChars,
+				);
 				// setTextWpm((correctChars + 1) / 5 / (fullTime / 60));
 				// setAccuracy((correctChars + 1) / word.length);
 			}

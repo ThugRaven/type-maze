@@ -4,21 +4,25 @@ export const TypedText = ({
 	text,
 	index,
 	errorsArray,
+	customText,
 }: {
 	text: string;
 	index: number;
 	errorsArray: boolean[];
+	customText?: string;
 }) => {
 	const getStyledText = (
+		text: string,
 		startIndex: number,
 		length: number,
 		style: 'completed' | 'selected' | 'notcompleted',
+		skipErrors = false,
 	) => {
 		let chars: string[] = [];
 		const result: ReactElement[] = [];
 		for (let i = startIndex; i < length; i++) {
 			const char = text[i];
-			if (errorsArray[i] && i != index) {
+			if (errorsArray[i] && i != index && !skipErrors) {
 				if (chars.length > 0) {
 					result.push(<span key={`chars-${i}`}>{chars.join('')}</span>);
 					chars = [];
@@ -61,12 +65,23 @@ export const TypedText = ({
 	return (
 		<div>
 			<span className="text-gray-700">
-				{getStyledText(0, index, 'completed')}
+				{getStyledText(text, 0, index, 'completed')}
 			</span>
 			<span className="relative before:absolute before:-bottom-px before:w-full before:bg-white before:h-px">
-				{getStyledText(index, index + 1, 'selected')}
+				{getStyledText(text, index, index + 1, 'selected')}
 			</span>
-			<span>{getStyledText(index + 1, text.length, 'notcompleted')}</span>
+			<span>{getStyledText(text, index + 1, text.length, 'notcompleted')}</span>
+			{customText && (
+				<span>
+					{getStyledText(
+						customText,
+						0,
+						customText.length,
+						'notcompleted',
+						true,
+					)}
+				</span>
+			)}
 		</div>
 	);
 };

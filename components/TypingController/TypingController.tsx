@@ -11,6 +11,7 @@ export default function TypingController() {
 	const [startTime, setStartTime] = useState<Date | null>(null);
 	const [totalCorrectChars, setTotalCorrectChars] = useState(0);
 	const [totalIncorrectChars, setTotalIncorrectChars] = useState(0);
+	const [totalAccuracy, setTotalAccuracy] = useState(0);
 	const [wpm, setWpm] = useState(0);
 
 	const getRandomUniqueWord = useCallback((words: string[]) => {
@@ -58,7 +59,11 @@ export default function TypingController() {
 		setMoveUpWords([moveUpWords[1], newWord]);
 		const newTotalCorrectChars = totalCorrectChars + correctChars;
 		setTotalCorrectChars(newTotalCorrectChars);
-		setTotalIncorrectChars((v) => v + incorrectChars);
+		const newTotalIncorrectChars = totalIncorrectChars + incorrectChars;
+		setTotalIncorrectChars(newTotalIncorrectChars);
+		setTotalAccuracy(
+			newTotalCorrectChars / (newTotalCorrectChars + newTotalIncorrectChars),
+		);
 		const totalTime = startTime
 			? (endTime.getTime() - startTime.getTime()) / 1000
 			: 0;
@@ -79,6 +84,7 @@ export default function TypingController() {
 			<div>Correct chars: {totalCorrectChars}</div>
 			<div>Incorrect chars: {totalIncorrectChars}</div>
 			<div>Current wpm: {Math.round(wpm)}</div>
+			<div>Accuracy: {Math.round(totalAccuracy * 100)}%</div>
 			<TypingText
 				key={moveUpWords[0]}
 				words={moveUpWords}

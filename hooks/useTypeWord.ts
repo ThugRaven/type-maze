@@ -37,11 +37,14 @@ export default function useTypeWord(
 			onStart(new Date());
 		}
 
+		let totalCorrectChars = correctChars;
+
 		if (!errorsArray[index]) {
 			if (key === wordToType[index]) {
 				console.log('correct');
 
-				setCorrectChars((c) => c + 1);
+				totalCorrectChars++;
+				setCorrectChars(totalCorrectChars);
 			} else {
 				console.log('incorrect');
 
@@ -69,7 +72,7 @@ export default function useTypeWord(
 					wordToType,
 					typeTime,
 					endTime,
-					correctChars + 1,
+					totalCorrectChars,
 					incorrectChars,
 				);
 				// setTextWpm((correctChars + 1) / 5 / (fullTime / 60));

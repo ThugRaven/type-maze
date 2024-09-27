@@ -22,6 +22,16 @@ export default function useTypeWord(
 	const [correctChars, setCorrectChars] = useState(0);
 	const incorrectChars = errorsArray.filter((value) => value).length;
 
+	const handleCheck = (key: string) => {
+		if (!regex.test(key)) {
+			return false;
+		}
+
+		if (key === wordToType[index]) {
+			return true;
+		} else return false;
+	};
+
 	const handleType = (key: string) => {
 		if (key === 'Backspace') {
 			onReset();
@@ -85,8 +95,7 @@ export default function useTypeWord(
 		word: wordToType,
 		index,
 		errorsArray,
-		correctChars,
-		incorrectChars,
 		onType: handleType,
+		onCheck: handleCheck,
 	};
 }

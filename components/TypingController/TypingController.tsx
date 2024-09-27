@@ -8,6 +8,9 @@ export default function TypingController() {
 	const [moveDownWords, setMoveDownWords] = useState(['', '']);
 	const [moveLeftWords, setMoveLeftWords] = useState(['', '']);
 	const [moveRightWords, setMoveRightWords] = useState(['', '']);
+	const [currentDirection, setCurrentDirection] = useState<
+		'up' | 'down' | 'left' | 'right' | null
+	>(null);
 	const [startTime, setStartTime] = useState<Date | null>(null);
 	const [totalCorrectChars, setTotalCorrectChars] = useState(0);
 	const [totalIncorrectChars, setTotalIncorrectChars] = useState(0);
@@ -17,7 +20,9 @@ export default function TypingController() {
 	const getRandomUniqueWord = useCallback((words: string[]) => {
 		const randomWord = en.words[randomInt(0, en.words.length - 1)];
 
-		if (words.find((word) => word === randomWord)) {
+		if (
+			words.find((word) => word === randomWord || word[0] === randomWord[0])
+		) {
 			return getRandomUniqueWord(words);
 		}
 
@@ -42,6 +47,44 @@ export default function TypingController() {
 		}
 	};
 
+	const handleOnReset = () => {
+		if (currentDirection === 'up') {
+			const newWord = getRandomUniqueWord([
+				...moveDownWords,
+				...moveLeftWords,
+				...moveRightWords,
+				moveUpWords[1],
+			]);
+			setMoveUpWords([moveUpWords[1], newWord]);
+		} else if (currentDirection === 'down') {
+			const newWord = getRandomUniqueWord([
+				...moveUpWords,
+				...moveLeftWords,
+				...moveRightWords,
+				moveDownWords[1],
+			]);
+			setMoveDownWords([moveDownWords[1], newWord]);
+		} else if (currentDirection === 'left') {
+			const newWord = getRandomUniqueWord([
+				...moveUpWords,
+				...moveDownWords,
+				...moveRightWords,
+				moveLeftWords[1],
+			]);
+			setMoveLeftWords([moveLeftWords[1], newWord]);
+		} else if (currentDirection === 'right') {
+			const newWord = getRandomUniqueWord([
+				...moveUpWords,
+				...moveDownWords,
+				...moveLeftWords,
+				moveRightWords[1],
+			]);
+			setMoveRightWords([moveRightWords[1], newWord]);
+		}
+
+		setCurrentDirection(null);
+	};
+
 	const handleOnWordTyped = (
 		word: string,
 		typeTime: number,
@@ -50,13 +93,40 @@ export default function TypingController() {
 		incorrectChars: number,
 	) => {
 		console.log('Finished in ', typeTime);
-		const newWord = getRandomUniqueWord([
-			...moveDownWords,
-			...moveLeftWords,
-			...moveRightWords,
-			moveUpWords[1],
-		]);
-		setMoveUpWords([moveUpWords[1], newWord]);
+		if (currentDirection === 'up') {
+			const newWord = getRandomUniqueWord([
+				...moveDownWords,
+				...moveLeftWords,
+				...moveRightWords,
+				moveUpWords[1],
+			]);
+			setMoveUpWords([moveUpWords[1], newWord]);
+		} else if (currentDirection === 'down') {
+			const newWord = getRandomUniqueWord([
+				...moveUpWords,
+				...moveLeftWords,
+				...moveRightWords,
+				moveDownWords[1],
+			]);
+			setMoveDownWords([moveDownWords[1], newWord]);
+		} else if (currentDirection === 'left') {
+			const newWord = getRandomUniqueWord([
+				...moveUpWords,
+				...moveDownWords,
+				...moveRightWords,
+				moveLeftWords[1],
+			]);
+			setMoveLeftWords([moveLeftWords[1], newWord]);
+		} else if (currentDirection === 'right') {
+			const newWord = getRandomUniqueWord([
+				...moveUpWords,
+				...moveDownWords,
+				...moveLeftWords,
+				moveRightWords[1],
+			]);
+			setMoveRightWords([moveRightWords[1], newWord]);
+		}
+
 		const newTotalCorrectChars = totalCorrectChars + correctChars;
 		setTotalCorrectChars(newTotalCorrectChars);
 		const newTotalIncorrectChars = totalIncorrectChars + incorrectChars;
@@ -77,6 +147,17 @@ export default function TypingController() {
 			newTotalCorrectChars,
 		);
 		setWpm(currentWpm);
+		setCurrentDirection(null);
+	};
+
+	const handleCheckDirection = (
+		direction: 'up' | 'down' | 'left' | 'right',
+		isCorrect: boolean,
+	) => {
+		if (isCorrect) {
+			console.log('Set new direction: ', direction);
+			setCurrentDirection(direction);
+		}
 	};
 
 	return (
@@ -85,18 +166,57 @@ export default function TypingController() {
 			<div>Incorrect chars: {totalIncorrectChars}</div>
 			<div>Current wpm: {Math.round(wpm)}</div>
 			<div>Accuracy: {Math.round(totalAccuracy * 100)}%</div>
+			<div>Current direction: {currentDirection}</div>
+			<div>Up</div>
 			<TypingText
-				key={moveUpWords[0]}
+				key={'up' + moveUpWords[0]}
 				words={moveUpWords}
+				direction={'up'}
+				currentDirection={currentDirection}
 				onWordTyped={handleOnWordTyped}
 				onStart={handleOnStart}
+				onReset={handleOnReset}
+				onCheckDirection={handleCheckDirection}
+			/>
+			<div>Down</div>
+			<TypingText
+				key={'down' + moveDownWords[0]}
+				words={moveDownWords}
+				direction={'down'}
+				currentDirection={currentDirection}
+				onWordTyped={handleOnWordTyped}
+				onStart={handleOnStart}
+				onReset={handleOnReset}
+				onCheckDirection={handleCheckDirection}
+			/>
+			<div>Left</div>
+			<TypingText
+				key={'left' + moveLeftWords[0]}
+				words={moveLeftWords}
+				direction={'left'}
+				currentDirection={currentDirection}
+				onWordTyped={handleOnWordTyped}
+				onStart={handleOnStart}
+				onReset={handleOnReset}
+				onCheckDirection={handleCheckDirection}
+			/>
+			<div>Right</div>
+			<TypingText
+				key={'right' + moveRightWords[0]}
+				words={moveRightWords}
+				direction={'right'}
+				currentDirection={currentDirection}
+				onWordTyped={handleOnWordTyped}
+				onStart={handleOnStart}
+				onReset={handleOnReset}
+				onCheckDirection={handleCheckDirection}
 			/>
 
-			<div>Words</div>
+			{/* <div>Words</div>
 			<div>{moveUpWords.join(' ')}</div>
 			<div>{moveDownWords.join(' ')}</div>
 			<div>{moveLeftWords.join(' ')}</div>
-			<div>{moveRightWords.join(' ')}</div>
+			<div>{moveRightWords.join(' ')}</div> */}
 		</div>
 	);
 }

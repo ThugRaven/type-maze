@@ -6,6 +6,7 @@ export default class MazeGenerator {
 	grid: Cell[];
 	current: Cell;
 	stack: Cell[];
+	player: Cell;
 
 	constructor() {
 		this.cols = 10;
@@ -21,8 +22,32 @@ export default class MazeGenerator {
 		}
 
 		this.current = this.grid[0];
+		this.player = this.grid[0];
 
 		console.log(this.grid);
+	}
+
+	move(direction: string) {
+		if (direction === 'up' && !this.player.walls[0]) {
+			this.player =
+				this.grid[this.player.index(this.player.x, this.player.y - 1)];
+			console.log(direction);
+		}
+		if (direction === 'right' && !this.player.walls[1]) {
+			this.player =
+				this.grid[this.player.index(this.player.x + 1, this.player.y)];
+			console.log(direction);
+		}
+		if (direction === 'down' && !this.player.walls[2]) {
+			this.player =
+				this.grid[this.player.index(this.player.x, this.player.y + 1)];
+			console.log(direction);
+		}
+		if (direction === 'left' && !this.player.walls[3]) {
+			this.player =
+				this.grid[this.player.index(this.player.x - 1, this.player.y)];
+			console.log(direction);
+		}
 	}
 
 	draw() {
@@ -46,7 +71,11 @@ export default class MazeGenerator {
 		}
 
 		for (let i = 0; i < this.grid.length; i++) {
-			list.push(this.grid[i].drawCell());
+			if (this.grid[i] === this.player) {
+				list.push(this.grid[i].drawCell(true));
+			} else {
+				list.push(this.grid[i].drawCell(false));
+			}
 		}
 
 		return list;
@@ -108,7 +137,7 @@ class Cell {
 		} else return null;
 	}
 
-	drawCell() {
+	drawCell(player: boolean) {
 		const borders = [];
 
 		if (this.walls[0]) {
@@ -126,8 +155,8 @@ class Cell {
 
 		return (
 			<div
-				className={`w-4 h-4 ${borders.join(' ')} ${
-					this.visited ? 'bg-lime-500' : 'bg-gray-500'
+				className={`w-8 h-8 ${borders.join(' ')} ${
+					player ? 'bg-red-500' : this.visited ? 'bg-lime-500' : 'bg-gray-500'
 				}`}
 			></div>
 		);

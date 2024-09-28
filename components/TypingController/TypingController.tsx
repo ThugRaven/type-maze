@@ -1,9 +1,15 @@
-import { useCallback, useEffect, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import en from '../../public/en.json';
 import { randomInt } from '@/utils/utils';
 import TypingText from '../TypingText/TypingText';
 
-export default function TypingController() {
+export default function TypingController({
+	onMove,
+	children,
+}: {
+	onMove: (direction: string) => void;
+	children: ReactNode;
+}) {
 	const [moveUpWords, setMoveUpWords] = useState(['', '']);
 	const [moveDownWords, setMoveDownWords] = useState(['', '']);
 	const [moveLeftWords, setMoveLeftWords] = useState(['', '']);
@@ -101,6 +107,7 @@ export default function TypingController() {
 				moveUpWords[1],
 			]);
 			setMoveUpWords([moveUpWords[1], newWord]);
+			onMove('up');
 		} else if (currentDirection === 'down') {
 			const newWord = getRandomUniqueWord([
 				...moveUpWords,
@@ -109,6 +116,7 @@ export default function TypingController() {
 				moveDownWords[1],
 			]);
 			setMoveDownWords([moveDownWords[1], newWord]);
+			onMove('down');
 		} else if (currentDirection === 'left') {
 			const newWord = getRandomUniqueWord([
 				...moveUpWords,
@@ -117,6 +125,7 @@ export default function TypingController() {
 				moveLeftWords[1],
 			]);
 			setMoveLeftWords([moveLeftWords[1], newWord]);
+			onMove('left');
 		} else if (currentDirection === 'right') {
 			const newWord = getRandomUniqueWord([
 				...moveUpWords,
@@ -125,6 +134,7 @@ export default function TypingController() {
 				moveRightWords[1],
 			]);
 			setMoveRightWords([moveRightWords[1], newWord]);
+			onMove('right');
 		}
 
 		const newTotalCorrectChars = totalCorrectChars + correctChars;
@@ -161,56 +171,69 @@ export default function TypingController() {
 	};
 
 	return (
-		<div>
-			<div>Correct chars: {totalCorrectChars}</div>
-			<div>Incorrect chars: {totalIncorrectChars}</div>
-			<div>Current wpm: {Math.round(wpm)}</div>
-			<div>Accuracy: {Math.round(totalAccuracy * 100)}%</div>
-			<div>Current direction: {currentDirection}</div>
-			<div>Up</div>
-			<TypingText
-				key={'up' + moveUpWords[0]}
-				words={moveUpWords}
-				direction={'up'}
-				currentDirection={currentDirection}
-				onWordTyped={handleOnWordTyped}
-				onStart={handleOnStart}
-				onReset={handleOnReset}
-				onCheckDirection={handleCheckDirection}
-			/>
-			<div>Down</div>
-			<TypingText
-				key={'down' + moveDownWords[0]}
-				words={moveDownWords}
-				direction={'down'}
-				currentDirection={currentDirection}
-				onWordTyped={handleOnWordTyped}
-				onStart={handleOnStart}
-				onReset={handleOnReset}
-				onCheckDirection={handleCheckDirection}
-			/>
-			<div>Left</div>
-			<TypingText
-				key={'left' + moveLeftWords[0]}
-				words={moveLeftWords}
-				direction={'left'}
-				currentDirection={currentDirection}
-				onWordTyped={handleOnWordTyped}
-				onStart={handleOnStart}
-				onReset={handleOnReset}
-				onCheckDirection={handleCheckDirection}
-			/>
-			<div>Right</div>
-			<TypingText
-				key={'right' + moveRightWords[0]}
-				words={moveRightWords}
-				direction={'right'}
-				currentDirection={currentDirection}
-				onWordTyped={handleOnWordTyped}
-				onStart={handleOnStart}
-				onReset={handleOnReset}
-				onCheckDirection={handleCheckDirection}
-			/>
+		<div className="grid grid-cols-3 grid-rows-3 items-center justify-items-center">
+			<div className="flex flex-col items-center col-start-2">
+				<div className="flex">
+					<div>Correct chars: {totalCorrectChars}</div>
+					<div>Incorrect chars: {totalIncorrectChars}</div>
+					<div>Current wpm: {Math.round(wpm)}</div>
+					<div>Accuracy: {Math.round(totalAccuracy * 100)}%</div>
+					<div>Current direction: {currentDirection}</div>
+				</div>
+				<div>
+					<div>Up</div>
+					<TypingText
+						key={'up' + moveUpWords[0]}
+						words={moveUpWords}
+						direction={'up'}
+						currentDirection={currentDirection}
+						onWordTyped={handleOnWordTyped}
+						onStart={handleOnStart}
+						onReset={handleOnReset}
+						onCheckDirection={handleCheckDirection}
+					/>
+				</div>
+			</div>
+			<div className="col-start-2 row-start-2">{children}</div>
+			<div className="col-start-2 row-start-3">
+				<div>Down</div>
+				<TypingText
+					key={'down' + moveDownWords[0]}
+					words={moveDownWords}
+					direction={'down'}
+					currentDirection={currentDirection}
+					onWordTyped={handleOnWordTyped}
+					onStart={handleOnStart}
+					onReset={handleOnReset}
+					onCheckDirection={handleCheckDirection}
+				/>
+			</div>
+			<div className="col-start-1 row-start-2">
+				<div>Left</div>
+				<TypingText
+					key={'left' + moveLeftWords[0]}
+					words={moveLeftWords}
+					direction={'left'}
+					currentDirection={currentDirection}
+					onWordTyped={handleOnWordTyped}
+					onStart={handleOnStart}
+					onReset={handleOnReset}
+					onCheckDirection={handleCheckDirection}
+				/>
+			</div>
+			<div className="col-start-3 row-start-2">
+				<div>Right</div>
+				<TypingText
+					key={'right' + moveRightWords[0]}
+					words={moveRightWords}
+					direction={'right'}
+					currentDirection={currentDirection}
+					onWordTyped={handleOnWordTyped}
+					onStart={handleOnStart}
+					onReset={handleOnReset}
+					onCheckDirection={handleCheckDirection}
+				/>
+			</div>
 
 			{/* <div>Words</div>
 			<div>{moveUpWords.join(' ')}</div>

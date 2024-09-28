@@ -1,16 +1,16 @@
 'use client';
 
-import { TypedText } from '@/components/TypedText/TypedText';
-import { TypingContainer } from '@/components/TypingContainer/TypingContainer';
 import TypingController from '@/components/TypingController/TypingController';
-import TypingText from '@/components/TypingText/TypingText';
-import useTypeWord from '@/hooks/useTypeWord';
 import Image from 'next/image';
-import { useCallback, useEffect } from 'react';
+import MazeGenerator from './classes/MazeGenerator';
 
-const text = 'The quick brown fox jumps over the lazy dog';
+// const text = 'The quick brown fox jumps over the lazy dog';
 
 export default function Home() {
+	const mazeGenerator = new MazeGenerator();
+	const maze = mazeGenerator.draw();
+	console.log(mazeGenerator);
+
 	// const { word, index, errorsArray, correctChars, incorrectChars, onType } =
 	// 	useTypeWord(
 	// 		text,
@@ -45,6 +45,7 @@ export default function Home() {
 	return (
 		<div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
 			<main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+				<div className="grid grid-cols-10 grid-rows-10">{maze}</div>
 				<div className="font-mono">
 					{/* <div>
 						{new Intl.DateTimeFormat('en-US', {

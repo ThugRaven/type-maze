@@ -7,6 +7,7 @@ export default class MazeGenerator {
 	current: Cell;
 	stack: Cell[];
 	player: Cell;
+	goal: Cell;
 
 	constructor() {
 		this.cols = 10;
@@ -23,11 +24,12 @@ export default class MazeGenerator {
 
 		this.current = this.grid[0];
 		this.player = this.grid[0];
+		this.goal = this.grid[this.grid.length - 1];
 
 		console.log(this.grid);
 	}
 
-	move(direction: string) {
+	move(direction: string, onGoalReached: () => void) {
 		if (direction === 'up' && !this.player.walls[0]) {
 			this.player =
 				this.grid[this.player.index(this.player.x, this.player.y - 1)];
@@ -47,6 +49,11 @@ export default class MazeGenerator {
 			this.player =
 				this.grid[this.player.index(this.player.x - 1, this.player.y)];
 			console.log(direction);
+		}
+
+		if (this.player === this.goal) {
+			console.log('goal reached');
+			onGoalReached();
 		}
 	}
 

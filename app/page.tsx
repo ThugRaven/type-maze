@@ -7,9 +7,9 @@ import { useEffect, useState } from 'react';
 // const text = 'The quick brown fox jumps over the lazy dog';
 
 export default function Home() {
-	const [test, setTest] = useState(0);
 	const [mazeGenerator, setMazeGenerator] = useState(new MazeGenerator());
 	const [maze, setMaze] = useState<JSX.Element[]>();
+	const [isGoalReached, setIsGoalReached] = useState(false);
 	console.log(mazeGenerator);
 
 	useEffect(() => {
@@ -18,7 +18,9 @@ export default function Home() {
 
 	const handleOnMove = (direction: string) => {
 		console.log('move: ', direction);
-		mazeGenerator.move(direction);
+		mazeGenerator.move(direction, () => {
+			setIsGoalReached(true);
+		});
 		setMaze(mazeGenerator.draw());
 	};
 
@@ -68,6 +70,7 @@ export default function Home() {
 					{/* <div>Correct chars: {correctChars}</div>
 					<div>Incorrect chars: {incorrectChars}</div>
 					<TypedText text={word} index={index} errorsArray={errorsArray} /> */}
+					{isGoalReached && <div>You{"'"}ve won!</div>}
 					<TypingController onMove={handleOnMove}>
 						<div className="grid grid-cols-10 grid-rows-10">{maze}</div>
 					</TypingController>

@@ -41,18 +41,21 @@ export default function TypingText({
 	const handleKeyDown = useCallback(
 		(e: KeyboardEvent) => {
 			const { key } = e;
-			// console.log(key, e);
 
 			if (currentDirection === null) {
 				if (onCheck(key)) {
 					onCheckDirection(direction, true);
 					onType(key);
 				}
+				return;
 			}
 
 			if (currentDirection === direction) {
 				onType(key);
+				return;
 			}
+
+			e.preventDefault();
 		},
 		[onType, direction, currentDirection, onCheck, onCheckDirection],
 	);

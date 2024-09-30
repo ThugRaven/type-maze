@@ -1,23 +1,25 @@
 'use client';
 
 import TypingController from '@/components/TypingController/TypingController';
-import Image from 'next/image';
 import MazeGenerator from './classes/MazeGenerator';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // const text = 'The quick brown fox jumps over the lazy dog';
 
 export default function Home() {
 	const [test, setTest] = useState(0);
 	const [mazeGenerator, setMazeGenerator] = useState(new MazeGenerator());
-	let maze = mazeGenerator.draw();
+	const [maze, setMaze] = useState<JSX.Element[]>();
 	console.log(mazeGenerator);
+
+	useEffect(() => {
+		setMaze(mazeGenerator.draw());
+	}, [mazeGenerator]);
 
 	const handleOnMove = (direction: string) => {
 		console.log('move: ', direction);
 		mazeGenerator.move(direction);
-		maze = mazeGenerator.draw();
-		setTest((v) => v + 1);
+		setMaze(mazeGenerator.draw());
 	};
 
 	// const { word, index, errorsArray, correctChars, incorrectChars, onType } =
@@ -67,9 +69,7 @@ export default function Home() {
 					<div>Incorrect chars: {incorrectChars}</div>
 					<TypedText text={word} index={index} errorsArray={errorsArray} /> */}
 					<TypingController onMove={handleOnMove}>
-						<div className="grid grid-cols-10 grid-rows-10" key={maze.join('')}>
-							{maze}
-						</div>
+						<div className="grid grid-cols-10 grid-rows-10">{maze}</div>
 					</TypingController>
 					{/* <TypingContainer></TypingContainer> */}
 				</div>

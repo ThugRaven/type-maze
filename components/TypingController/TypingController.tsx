@@ -22,6 +22,7 @@ export default function TypingController({
 	const [totalIncorrectChars, setTotalIncorrectChars] = useState(0);
 	const [totalAccuracy, setTotalAccuracy] = useState(0);
 	const [wpm, setWpm] = useState(0);
+	const [moves, setMoves] = useState(0);
 
 	const getRandomUniqueWord = useCallback((words: string[]) => {
 		const randomWord = en.words[randomInt(0, en.words.length - 1)];
@@ -158,6 +159,7 @@ export default function TypingController({
 		);
 		setWpm(currentWpm);
 		setCurrentDirection(null);
+		setMoves((v) => v + 1);
 	};
 
 	const handleCheckDirection = (
@@ -179,6 +181,7 @@ export default function TypingController({
 					<div>Current wpm: {Math.round(wpm)}</div>
 					<div>Accuracy: {Math.round(totalAccuracy * 100)}%</div>
 					<div>Current direction: {currentDirection}</div>
+					<div>Moves: {moves}</div>
 				</div>
 				<div>
 					<div>Up</div>

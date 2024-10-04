@@ -173,16 +173,16 @@ export default function TypingController({
 	};
 
 	return (
-		<div className="grid grid-cols-3 grid-rows-3 items-center justify-items-center">
-			<div className="flex flex-col items-center col-start-2">
-				<div className="flex">
-					<div>Correct chars: {totalCorrectChars}</div>
-					<div>Incorrect chars: {totalIncorrectChars}</div>
-					<div>Current wpm: {Math.round(wpm)}</div>
-					<div>Accuracy: {Math.round(totalAccuracy * 100)}%</div>
-					<div>Current direction: {currentDirection}</div>
-					<div>Moves: {moves}</div>
-				</div>
+		<div className="grid grid-cols-3 grid-rows-[auto_repeat(4,_minmax(0,_auto))] gap-2 items-center justify-items-center">
+			<div className="col-start-2 flex gap-2">
+				<div>Correct chars: {totalCorrectChars}</div>
+				<div>Incorrect chars: {totalIncorrectChars}</div>
+				<div>Current wpm: {Math.round(wpm)}</div>
+				<div>Accuracy: {Math.round(totalAccuracy * 100)}%</div>
+				<div>Current direction: {currentDirection}</div>
+				<div>Moves: {moves}</div>
+			</div>
+			<div className="flex flex-col items-center col-start-2 self-end">
 				<div>
 					<div>Up</div>
 					<TypingText
@@ -197,8 +197,8 @@ export default function TypingController({
 					/>
 				</div>
 			</div>
-			<div className="col-start-2 row-start-2">{children}</div>
-			<div className="col-start-2 row-start-3">
+			<div className="col-start-2 row-start-3">{children}</div>
+			<div className="col-start-2 row-start-4 self-start">
 				<div>Down</div>
 				<TypingText
 					key={'down' + moveDownWords[0]}
@@ -211,7 +211,7 @@ export default function TypingController({
 					onCheckDirection={handleCheckDirection}
 				/>
 			</div>
-			<div className="col-start-1 row-start-2">
+			<div className="col-start-1 row-start-3 justify-self-end">
 				<div>Left</div>
 				<TypingText
 					key={'left' + moveLeftWords[0]}
@@ -224,7 +224,7 @@ export default function TypingController({
 					onCheckDirection={handleCheckDirection}
 				/>
 			</div>
-			<div className="col-start-3 row-start-2">
+			<div className="col-start-3 row-start-3 justify-self-start">
 				<div>Right</div>
 				<TypingText
 					key={'right' + moveRightWords[0]}

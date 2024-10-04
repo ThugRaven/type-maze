@@ -1,8 +1,10 @@
+import { line, rect } from '@/utils/shapes';
 import { randomInt } from '@/utils/utils';
 
 export default class MazeGenerator {
 	cols: number;
 	rows: number;
+	width: number;
 	grid: Cell[];
 	current: Cell;
 	stack: Cell[];
@@ -12,12 +14,20 @@ export default class MazeGenerator {
 	constructor() {
 		this.cols = 10;
 		this.rows = 10;
+		this.width = 40;
 		this.grid = [];
 		this.stack = [];
 
 		for (let y = 0; y < this.rows; y++) {
 			for (let x = 0; x < this.cols; x++) {
-				const cell = new Cell(this.grid, this.cols, this.rows, x, y);
+				const cell = new Cell(
+					this.grid,
+					this.cols,
+					this.rows,
+					this.width,
+					x,
+					y,
+				);
 				this.grid.push(cell);
 			}
 		}
@@ -57,9 +67,9 @@ export default class MazeGenerator {
 		}
 	}
 
-	draw() {
-		const list = [];
-
+	draw(ctx: CanvasRenderingContext2D) {
+		ctx.clearRect(0, 0, this.cols * this.width, this.rows * this.width);
+		ctx.strokeStyle = 'white';
 		this.current.visited = true;
 
 		while (this.current.checkNeighbors() || this.stack.length > 0) {
@@ -79,13 +89,11 @@ export default class MazeGenerator {
 
 		for (let i = 0; i < this.grid.length; i++) {
 			if (this.grid[i] === this.player) {
-				list.push(this.grid[i].drawCell(true));
+				this.grid[i].drawCell(true, ctx);
 			} else {
-				list.push(this.grid[i].drawCell(false));
+				this.grid[i].drawCell(false, ctx);
 			}
 		}
-
-		return list;
 	}
 }
 
@@ -93,16 +101,25 @@ class Cell {
 	grid: Cell[];
 	cols: number;
 	rows: number;
+	width: number;
 	x: number;
 	y: number;
 	// top, right, bottom, left
 	walls: [boolean, boolean, boolean, boolean];
 	visited: boolean;
 
-	constructor(grid: Cell[], cols: number, rows: number, x: number, y: number) {
+	constructor(
+		grid: Cell[],
+		cols: number,
+		rows: number,
+		width: number,
+		x: number,
+		y: number,
+	) {
 		this.grid = grid;
 		this.cols = cols;
 		this.rows = rows;
+		this.width = width;
 		this.x = x;
 		this.y = y;
 		this.walls = [true, true, true, true];
@@ -144,29 +161,27 @@ class Cell {
 		} else return null;
 	}
 
-	drawCell(player: boolean) {
-		const borders = [];
+	drawCell(player: boolean, ctx: CanvasRenderingContext2D) {
+		const _x = this.x * this.width;
+		const _y = this.y * this.width;
 
 		if (this.walls[0]) {
-			borders.push('border-t');
+			line(ctx, _x, _y, _x + this.width, _y);
 		}
 		if (this.walls[1]) {
-			borders.push('border-r');
+			line(ctx, _x + this.width, _y, _x + this.width, _y + this.width);
 		}
 		if (this.walls[2]) {
-			borders.push('border-b');
+			line(ctx, _x + this.width, _y + this.width, _x, _y + this.width);
 		}
 		if (this.walls[3]) {
-			borders.push('border-l');
+			line(ctx, _x, _y + this.width, _x, _y);
 		}
 
-		return (
-			<div
-				className={`w-8 h-8 ${borders.join(' ')} ${
-					player ? 'bg-red-500' : this.visited ? 'bg-lime-500' : 'bg-gray-500'
-				}`}
-			></div>
-		);
+		if (player) {
+			ctx.fillStyle = 'lime';
+			rect(ctx, _x, _y, this.width, this.width);
+		}
 	}
 
 	removeWalls(next: Cell) {

@@ -2,26 +2,51 @@
 
 import TypingController from '@/components/TypingController/TypingController';
 import MazeGenerator from './classes/MazeGenerator';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // const text = 'The quick brown fox jumps over the lazy dog';
+const mazeGenerator = new MazeGenerator();
 
 export default function Home() {
-	const [mazeGenerator, setMazeGenerator] = useState(new MazeGenerator());
-	const [maze, setMaze] = useState<JSX.Element[]>();
 	const [isGoalReached, setIsGoalReached] = useState(false);
+	const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
+	const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
 	console.log(mazeGenerator);
 
+	// useEffect(() => {
+	// 	setMaze(mazeGenerator.draw());
+	// }, [mazeGenerator]);
+
 	useEffect(() => {
-		setMaze(mazeGenerator.draw());
-	}, [mazeGenerator]);
+		if (ctx) {
+			mazeGenerator.draw(ctx);
+		}
+	}, [ctx]);
+
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) {
+			return;
+		}
+
+		const ctx = canvas.getContext('2d');
+		if (!ctx) {
+			return;
+		}
+		setCtx(ctx);
+	}, []);
 
 	const handleOnMove = (direction: string) => {
+		if (!ctx) {
+			return;
+		}
+
 		console.log('move: ', direction);
 		mazeGenerator.move(direction, () => {
 			setIsGoalReached(true);
 		});
-		setMaze(mazeGenerator.draw());
+		mazeGenerator.draw(ctx);
 	};
 
 	// const { word, index, errorsArray, correctChars, incorrectChars, onType } =
@@ -72,7 +97,12 @@ export default function Home() {
 					<TypedText text={word} index={index} errorsArray={errorsArray} /> */}
 					{isGoalReached && <div>You{"'"}ve won!</div>}
 					<TypingController onMove={handleOnMove}>
-						<div className="grid grid-cols-10 grid-rows-10">{maze}</div>
+						{/* <div className="grid grid-cols-10 grid-rows-10">{maze}</div> */}
+						<canvas
+							ref={canvasRef}
+							width={mazeGenerator.cols * mazeGenerator.width}
+							height={mazeGenerator.rows * mazeGenerator.width}
+						></canvas>
 					</TypingController>
 					{/* <TypingContainer></TypingContainer> */}
 				</div>

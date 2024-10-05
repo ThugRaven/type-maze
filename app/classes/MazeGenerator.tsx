@@ -89,9 +89,11 @@ export default class MazeGenerator {
 
 		for (let i = 0; i < this.grid.length; i++) {
 			if (this.grid[i] === this.player) {
-				this.grid[i].drawCell(true, ctx);
+				this.grid[i].drawCell(true, false, ctx);
+			} else if (this.grid[i] === this.goal) {
+				this.grid[i].drawCell(false, true, ctx);
 			} else {
-				this.grid[i].drawCell(false, ctx);
+				this.grid[i].drawCell(false, false, ctx);
 			}
 		}
 	}
@@ -161,7 +163,7 @@ class Cell {
 		} else return null;
 	}
 
-	drawCell(player: boolean, ctx: CanvasRenderingContext2D) {
+	drawCell(player: boolean, goal: boolean, ctx: CanvasRenderingContext2D) {
 		const _x = this.x * this.width;
 		const _y = this.y * this.width;
 
@@ -180,6 +182,11 @@ class Cell {
 
 		if (player) {
 			ctx.fillStyle = 'lime';
+			rect(ctx, _x, _y, this.width, this.width);
+		}
+
+		if (goal) {
+			ctx.fillStyle = 'red';
 			rect(ctx, _x, _y, this.width, this.width);
 		}
 	}

@@ -174,13 +174,16 @@ export default function TypingController({
 
 	return (
 		<div className="grid grid-cols-3 grid-rows-[auto_repeat(4,_minmax(0,_auto))] gap-2 items-center justify-items-center">
-			<div className="col-start-2 flex gap-2">
-				<div>Correct chars: {totalCorrectChars}</div>
-				<div>Incorrect chars: {totalIncorrectChars}</div>
-				<div>Current wpm: {Math.round(wpm)}</div>
-				<div>Accuracy: {Math.round(totalAccuracy * 100)}%</div>
-				<div>Current direction: {currentDirection}</div>
-				<div>Moves: {moves}</div>
+			<div className="col-start-2 flex flex-col gap-2">
+				<div className="flex gap-2">
+					<div>Correct chars: {totalCorrectChars}</div>
+					<div>Incorrect chars: {totalIncorrectChars}</div>
+					<div>Current wpm: {Math.round(wpm)}</div>
+					<div>Accuracy: {Math.round(totalAccuracy * 100)}%</div>
+					<div>Current direction: {currentDirection}</div>
+					<div>Moves: {moves}</div>
+				</div>
+				<div>Backspace to cancel the currently typed word</div>
 			</div>
 			<div className="flex flex-col items-center col-start-2 self-end">
 				<div>

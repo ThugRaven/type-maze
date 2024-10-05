@@ -95,7 +95,11 @@ export default function Home() {
 					{/* <div>Correct chars: {correctChars}</div>
 					<div>Incorrect chars: {incorrectChars}</div>
 					<TypedText text={word} index={index} errorsArray={errorsArray} /> */}
-					{isGoalReached && <div>You{"'"}ve won!</div>}
+					{isGoalReached && (
+						<div className="absolute inset-0 flex items-center justify-center bg-black/85 z-10">
+							<span className="text-6xl">You{"'"}ve won!</span>
+						</div>
+					)}
 					<TypingController onMove={handleOnMove}>
 						{/* <div className="grid grid-cols-10 grid-rows-10">{maze}</div> */}
 						<canvas

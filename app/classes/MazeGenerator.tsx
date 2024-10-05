@@ -35,27 +35,41 @@ export default class MazeGenerator {
 		this.current = this.grid[0];
 		this.player = this.grid[0];
 		this.goal = this.grid[this.grid.length - 1];
+		this.grid[0].playerVisited = true;
 
 		console.log(this.grid);
 	}
 
 	move(direction: string, onGoalReached: () => void) {
 		if (direction === 'up' && !this.player.walls[0]) {
+			this.grid[
+				this.player.index(this.player.x, this.player.y - 1)
+			].playerVisited = true;
 			this.player =
 				this.grid[this.player.index(this.player.x, this.player.y - 1)];
+
 			console.log(direction);
 		}
 		if (direction === 'right' && !this.player.walls[1]) {
+			this.grid[
+				this.player.index(this.player.x + 1, this.player.y)
+			].playerVisited = true;
 			this.player =
 				this.grid[this.player.index(this.player.x + 1, this.player.y)];
 			console.log(direction);
 		}
 		if (direction === 'down' && !this.player.walls[2]) {
+			this.grid[
+				this.player.index(this.player.x, this.player.y + 1)
+			].playerVisited = true;
 			this.player =
 				this.grid[this.player.index(this.player.x, this.player.y + 1)];
 			console.log(direction);
 		}
 		if (direction === 'left' && !this.player.walls[3]) {
+			this.grid[
+				this.player.index(this.player.x - 1, this.player.y)
+			].playerVisited = true;
 			this.player =
 				this.grid[this.player.index(this.player.x - 1, this.player.y)];
 			console.log(direction);
@@ -109,6 +123,7 @@ class Cell {
 	// top, right, bottom, left
 	walls: [boolean, boolean, boolean, boolean];
 	visited: boolean;
+	playerVisited: boolean;
 
 	constructor(
 		grid: Cell[],
@@ -126,6 +141,7 @@ class Cell {
 		this.y = y;
 		this.walls = [true, true, true, true];
 		this.visited = false;
+		this.playerVisited = false;
 	}
 
 	index(x: number, y: number) {
@@ -167,6 +183,21 @@ class Cell {
 		const _x = this.x * this.width;
 		const _y = this.y * this.width;
 
+		if (this.playerVisited) {
+			ctx.fillStyle = 'rgb(0,26,0)';
+			rect(ctx, _x, _y, this.width, this.width);
+		}
+
+		if (player) {
+			ctx.fillStyle = 'lime';
+			rect(ctx, _x, _y, this.width, this.width);
+		}
+
+		if (goal) {
+			ctx.fillStyle = 'red';
+			rect(ctx, _x, _y, this.width, this.width);
+		}
+
 		if (this.walls[0]) {
 			line(ctx, _x, _y, _x + this.width, _y);
 		}
@@ -178,16 +209,6 @@ class Cell {
 		}
 		if (this.walls[3]) {
 			line(ctx, _x, _y + this.width, _x, _y);
-		}
-
-		if (player) {
-			ctx.fillStyle = 'lime';
-			rect(ctx, _x, _y, this.width, this.width);
-		}
-
-		if (goal) {
-			ctx.fillStyle = 'red';
-			rect(ctx, _x, _y, this.width, this.width);
 		}
 	}
 

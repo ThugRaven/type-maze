@@ -2,7 +2,7 @@
 
 import TypingController from '@/components/TypingController/TypingController';
 import MazeGenerator from './classes/MazeGenerator';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 // const text = 'The quick brown fox jumps over the lazy dog';
 const mazeGenerator = new MazeGenerator();
@@ -18,11 +18,30 @@ export default function Home() {
 	// 	setMaze(mazeGenerator.draw());
 	// }, [mazeGenerator]);
 
-	useEffect(() => {
-		if (ctx) {
-			mazeGenerator.draw(ctx);
+	const handleResize = useCallback(() => {
+		console.log(window.innerWidth, window.innerHeight);
+
+		if (canvasRef.current && ctx) {
+			console.log(canvasRef.current.getBoundingClientRect().width);
+			console.log(canvasRef.current.getBoundingClientRect().height);
+
+			const width = canvasRef.current.getBoundingClientRect().width;
+			canvasRef.current.width = Math.floor(width);
+			canvasRef.current.height = Math.floor(width);
+
+			mazeGenerator.updateSize(
+				canvasRef.current.getBoundingClientRect().width,
+				ctx,
+			);
 		}
 	}, [ctx]);
+
+	useEffect(() => {
+		if (ctx) {
+			handleResize();
+			mazeGenerator.draw(ctx);
+		}
+	}, [ctx, handleResize]);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -48,6 +67,14 @@ export default function Home() {
 		});
 		mazeGenerator.draw(ctx);
 	};
+
+	useEffect(() => {
+		window.addEventListener('resize', handleResize);
+
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	}, [handleResize]);
 
 	// const { word, index, errorsArray, correctChars, incorrectChars, onType } =
 	// 	useTypeWord(
@@ -102,11 +129,8 @@ export default function Home() {
 					)}
 					<TypingController onMove={handleOnMove}>
 						{/* <div className="grid grid-cols-10 grid-rows-10">{maze}</div> */}
-						<canvas
-							ref={canvasRef}
-							width={mazeGenerator.cols * mazeGenerator.width}
-							height={mazeGenerator.rows * mazeGenerator.width}
-						></canvas>
+						{/* className="w-36 h-36" */}
+						<canvas ref={canvasRef} className="w-full h-full"></canvas>
 					</TypingController>
 					{/* <TypingContainer></TypingContainer> */}
 				</div>

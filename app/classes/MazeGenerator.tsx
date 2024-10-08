@@ -40,6 +40,14 @@ export default class MazeGenerator {
 		console.log(this.grid);
 	}
 
+	updateSize(width: number, ctx: CanvasRenderingContext2D) {
+		console.log(this.width);
+		// ctx.clearRect(0, 0, this.cols * this.width, this.rows * this.width);
+		this.width = Math.floor(Math.floor(width) / this.cols);
+		this.draw(ctx);
+		console.log(this.width, this.cols, this.rows);
+	}
+
 	move(direction: string, onGoalReached: () => void) {
 		if (direction === 'up' && !this.player.walls[0]) {
 			this.grid[
@@ -103,11 +111,11 @@ export default class MazeGenerator {
 
 		for (let i = 0; i < this.grid.length; i++) {
 			if (this.grid[i] === this.player) {
-				this.grid[i].drawCell(true, false, ctx);
+				this.grid[i].drawCell(true, false, ctx, this.width);
 			} else if (this.grid[i] === this.goal) {
-				this.grid[i].drawCell(false, true, ctx);
+				this.grid[i].drawCell(false, true, ctx, this.width);
 			} else {
-				this.grid[i].drawCell(false, false, ctx);
+				this.grid[i].drawCell(false, false, ctx, this.width);
 			}
 		}
 	}
@@ -179,36 +187,42 @@ class Cell {
 		} else return null;
 	}
 
-	drawCell(player: boolean, goal: boolean, ctx: CanvasRenderingContext2D) {
-		const _x = this.x * this.width;
-		const _y = this.y * this.width;
+	drawCell(
+		player: boolean,
+		goal: boolean,
+		ctx: CanvasRenderingContext2D,
+		width: number,
+	) {
+		const _x = this.x * width;
+		const _y = this.y * width;
+		console.log(width);
 
 		if (this.playerVisited) {
 			ctx.fillStyle = 'rgb(0,26,0)';
-			rect(ctx, _x, _y, this.width, this.width);
+			rect(ctx, _x, _y, width, width);
 		}
 
 		if (player) {
 			ctx.fillStyle = 'lime';
-			rect(ctx, _x, _y, this.width, this.width);
+			rect(ctx, _x, _y, width, width);
 		}
 
 		if (goal) {
 			ctx.fillStyle = 'red';
-			rect(ctx, _x, _y, this.width, this.width);
+			rect(ctx, _x, _y, width, width);
 		}
 
 		if (this.walls[0]) {
-			line(ctx, _x, _y, _x + this.width, _y);
+			line(ctx, _x, _y, _x + width, _y);
 		}
 		if (this.walls[1]) {
-			line(ctx, _x + this.width, _y, _x + this.width, _y + this.width);
+			line(ctx, _x + width, _y, _x + width, _y + width);
 		}
 		if (this.walls[2]) {
-			line(ctx, _x + this.width, _y + this.width, _x, _y + this.width);
+			line(ctx, _x + width, _y + width, _x, _y + width);
 		}
 		if (this.walls[3]) {
-			line(ctx, _x, _y + this.width, _x, _y);
+			line(ctx, _x, _y + width, _x, _y);
 		}
 	}
 

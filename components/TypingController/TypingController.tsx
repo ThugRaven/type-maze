@@ -7,13 +7,11 @@ export default function TypingController({
 	onMove,
 	children,
 	width,
-	cols,
 	pos,
 }: {
 	onMove: (direction: string) => void;
 	children: ReactNode;
 	width: number;
-	cols: number;
 	pos: { x: number; y: number };
 }) {
 	const [moveUpWords, setMoveUpWords] = useState(['', '']);

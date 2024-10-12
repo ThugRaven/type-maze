@@ -11,7 +11,6 @@ export default function Home() {
 	const [isGoalReached, setIsGoalReached] = useState(false);
 	const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
 	const [width, setWidth] = useState(0);
-	const [cols, setCols] = useState(0);
 	const [pos, setPos] = useState({ x: 0, y: 0 });
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const canvasContainer = useRef<HTMLDivElement | null>(null);
@@ -35,15 +34,9 @@ export default function Home() {
 			canvasRef.current.width = Math.floor(Math.min(width, height));
 			canvasRef.current.height = Math.floor(Math.min(width, height));
 
-			const {
-				width: cellWidth,
-				cols: mazeCols,
-				rows,
-			} = mazeGenerator.updateSize(width, ctx);
-			console.log(cellWidth, mazeCols);
+			const { width: cellWidth } = mazeGenerator.updateSize(width, ctx);
 
 			setWidth(cellWidth);
-			setCols(mazeCols);
 		}
 	}, [ctx]);
 
@@ -139,12 +132,7 @@ export default function Home() {
 							<span className="text-6xl">You{"'"}ve won!</span>
 						</div>
 					)}
-					<TypingController
-						onMove={handleOnMove}
-						width={width}
-						cols={cols}
-						pos={pos}
-					>
+					<TypingController onMove={handleOnMove} width={width} pos={pos}>
 						<div ref={canvasContainer} className="w-full h-full ">
 							<canvas ref={canvasRef} className=""></canvas>
 						</div>

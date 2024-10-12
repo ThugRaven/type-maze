@@ -10,7 +10,11 @@ const mazeGenerator = new MazeGenerator();
 export default function Home() {
 	const [isGoalReached, setIsGoalReached] = useState(false);
 	const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
+	const [width, setWidth] = useState(0);
+	const [cols, setCols] = useState(0);
+	const [pos, setPos] = useState({ x: 0, y: 0 });
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
+	const canvasContainer = useRef<HTMLDivElement | null>(null);
 
 	console.log(mazeGenerator);
 
@@ -21,18 +25,25 @@ export default function Home() {
 	const handleResize = useCallback(() => {
 		console.log(window.innerWidth, window.innerHeight);
 
-		if (canvasRef.current && ctx) {
+		if (canvasContainer.current && canvasRef.current && ctx) {
 			console.log(canvasRef.current.getBoundingClientRect().width);
-			console.log(canvasRef.current.getBoundingClientRect().height);
 
-			const width = canvasRef.current.getBoundingClientRect().width;
-			canvasRef.current.width = Math.floor(width);
-			canvasRef.current.height = Math.floor(width);
+			const width = canvasContainer.current.getBoundingClientRect().width;
+			const height = canvasContainer.current.getBoundingClientRect().height;
+			console.log(width, height);
 
-			mazeGenerator.updateSize(
-				canvasRef.current.getBoundingClientRect().width,
-				ctx,
-			);
+			canvasRef.current.width = Math.floor(Math.min(width, height));
+			canvasRef.current.height = Math.floor(Math.min(width, height));
+
+			const {
+				width: cellWidth,
+				cols: mazeCols,
+				rows,
+			} = mazeGenerator.updateSize(width, ctx);
+			console.log(cellWidth, mazeCols);
+
+			setWidth(cellWidth);
+			setCols(mazeCols);
 		}
 	}, [ctx]);
 
@@ -62,10 +73,11 @@ export default function Home() {
 		}
 
 		console.log('move: ', direction);
-		mazeGenerator.move(direction, () => {
+		const playerPos = mazeGenerator.move(direction, () => {
 			setIsGoalReached(true);
 		});
 		mazeGenerator.draw(ctx);
+		setPos(playerPos);
 	};
 
 	useEffect(() => {
@@ -127,10 +139,17 @@ export default function Home() {
 							<span className="text-6xl">You{"'"}ve won!</span>
 						</div>
 					)}
-					<TypingController onMove={handleOnMove}>
+					<TypingController
+						onMove={handleOnMove}
+						width={width}
+						cols={cols}
+						pos={pos}
+					>
+						<div ref={canvasContainer} className="w-full h-full ">
+							<canvas ref={canvasRef} className=""></canvas>
+						</div>
 						{/* <div className="grid grid-cols-10 grid-rows-10">{maze}</div> */}
 						{/* className="w-36 h-36" */}
-						<canvas ref={canvasRef} className="w-full h-full"></canvas>
 					</TypingController>
 					{/* <TypingContainer></TypingContainer> */}
 				</div>

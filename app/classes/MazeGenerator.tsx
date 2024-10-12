@@ -46,6 +46,8 @@ export default class MazeGenerator {
 		this.width = Math.floor(Math.floor(width) / this.cols);
 		this.draw(ctx);
 		console.log(this.width, this.cols, this.rows);
+
+		return { width: this.width, cols: this.cols, rows: this.rows };
 	}
 
 	move(direction: string, onGoalReached: () => void) {
@@ -87,6 +89,8 @@ export default class MazeGenerator {
 			console.log('goal reached');
 			onGoalReached();
 		}
+
+		return { x: this.player.x, y: this.player.y };
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
@@ -195,7 +199,6 @@ class Cell {
 	) {
 		const _x = this.x * width;
 		const _y = this.y * width;
-		console.log(width);
 
 		if (this.playerVisited) {
 			ctx.fillStyle = 'rgb(0,26,0)';

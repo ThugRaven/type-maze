@@ -12,8 +12,8 @@ export default class MazeGenerator {
 	goal: Cell;
 
 	constructor() {
-		this.cols = 10;
-		this.rows = 10;
+		this.cols = 11;
+		this.rows = 11;
 		this.width = 40;
 		this.grid = [];
 		this.stack = [];
@@ -97,6 +97,19 @@ export default class MazeGenerator {
 		ctx.clearRect(0, 0, this.cols * this.width, this.rows * this.width);
 		ctx.strokeStyle = 'white';
 		this.current.visited = true;
+
+		ctx.fillStyle = 'rgb(26,26,26)';
+		for (let x = 0; x < this.cols; x += 1) {
+			if (x % 2 != 0) {
+				rect(ctx, x * this.width, 0, this.width, this.rows * this.width);
+			}
+		}
+
+		for (let y = 0; y < this.rows; y += 1) {
+			if (y % 2 != 0) {
+				rect(ctx, 0, y * this.width, this.cols * this.width, this.width);
+			}
+		}
 
 		while (this.current.checkNeighbors() || this.stack.length > 0) {
 			const next = this.current.checkNeighbors();

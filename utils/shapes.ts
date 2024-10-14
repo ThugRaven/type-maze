@@ -14,6 +14,7 @@ export function circle(
 	if (stroke) {
 		ctx.stroke();
 	}
+	ctx.closePath();
 }
 
 export function line(
@@ -37,6 +38,5 @@ export function rect(
 	width: number,
 	height: number,
 ) {
-	ctx.rect(x, y, width, height);
-	ctx.fill();
+	ctx.fillRect(x, y, width, height);
 }

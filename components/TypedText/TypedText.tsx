@@ -64,7 +64,7 @@ export const TypedText = ({
 
 	return (
 		<div>
-			<span className="text-gray-700">
+			<span className="text-gray-600">
 				{getStyledText(text, 0, index, 'completed')}
 			</span>
 			<span className="relative before:absolute before:-bottom-px before:w-full before:bg-white before:h-px">

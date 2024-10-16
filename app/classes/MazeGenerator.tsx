@@ -212,6 +212,7 @@ class Cell {
 	) {
 		const _x = this.x * width;
 		const _y = this.y * width;
+		const padding = 20;
 
 		if (this.playerVisited) {
 			ctx.fillStyle = 'rgb(0,26,0)';
@@ -220,12 +221,24 @@ class Cell {
 
 		if (player) {
 			ctx.fillStyle = 'lime';
-			rect(ctx, _x, _y, width, width);
+			rect(
+				ctx,
+				_x + padding / 2,
+				_y + padding / 2,
+				width - padding,
+				width - padding,
+			);
 		}
 
 		if (goal) {
 			ctx.fillStyle = 'red';
-			rect(ctx, _x, _y, width, width);
+			rect(
+				ctx,
+				_x + padding / 2,
+				_y + padding / 2,
+				width - padding,
+				width - padding,
+			);
 		}
 
 		if (this.walls[0]) {

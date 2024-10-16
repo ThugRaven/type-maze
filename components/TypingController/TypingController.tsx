@@ -216,10 +216,10 @@ export default function TypingController({
 					</button>
 				</div>
 			</div>
-			<div className="relative col-start-2 row-start-3 w-full h-full aspect-square drop-shadow-[0px_0px_2px_rgb(0_0_0)]">
+			<div className="relative col-start-2 row-start-3 w-full h-full aspect-square">
 				{isTracking && (
 					<div
-						className="absolute grid grid-cols-3 grid-rows-3 transition-transform pointer-events-none"
+						className="absolute grid grid-cols-3 grid-rows-3 transition-transform pointer-events-none text"
 						style={{
 							transform: `translate(calc(-50% + ${
 								width * pos.x

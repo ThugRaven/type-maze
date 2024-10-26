@@ -63,16 +63,20 @@ export const TypedText = ({
 	};
 
 	return (
-		<div>
-			<span className="text-gray-600">
-				{getStyledText(text, 0, index, 'completed')}
-			</span>
-			<span className="relative before:absolute before:-bottom-px before:w-full before:bg-white before:h-px">
-				{getStyledText(text, index, index + 1, 'selected')}
-			</span>
-			<span>{getStyledText(text, index + 1, text.length, 'notcompleted')}</span>
-			{customText && (
+		<div className="flex flex-wrap">
+			<div>
+				<span className="text-gray-600">
+					{getStyledText(text, 0, index, 'completed')}
+				</span>
+				<span className="relative before:absolute before:-bottom-px before:w-full before:bg-white before:h-px">
+					{getStyledText(text, index, index + 1, 'selected')}
+				</span>
 				<span>
+					{getStyledText(text, index + 1, text.length, 'notcompleted')}
+				</span>
+			</div>
+			{customText && (
+				<div>
 					{getStyledText(
 						customText,
 						0,
@@ -80,7 +84,7 @@ export const TypedText = ({
 						'notcompleted',
 						true,
 					)}
-				</span>
+				</div>
 			)}
 		</div>
 	);

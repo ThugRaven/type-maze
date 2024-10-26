@@ -13,9 +13,9 @@ export default class MazeGenerator {
 	goal: Cell;
 	rng: PRNG;
 
-	constructor() {
-		this.cols = 11;
-		this.rows = 11;
+	constructor(cols = 11, rows = 11) {
+		this.cols = cols;
+		this.rows = rows;
 		this.width = 40;
 		this.grid = [];
 		this.stack = [];

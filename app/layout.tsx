@@ -18,6 +18,10 @@ const montserrat = localFont({
 	variable: '--font-montserrat',
 	weight: '100 900',
 });
+const robotoMono = localFont({
+	src: './fonts/RobotoMono.ttf',
+	variable: '--font-roboto-mono',
+	weight: '100 900',
 });
 
 export const metadata: Metadata = {

@@ -212,7 +212,11 @@ class Cell {
 	) {
 		const _x = this.x * width;
 		const _y = this.y * width;
-		const padding = 20;
+		const ratio = 2.5;
+		const padding =
+			Math.floor(width / ratio) % 2 != 0
+				? Math.floor(width / ratio) - 1
+				: Math.floor(width / ratio);
 
 		if (this.playerVisited) {
 			ctx.fillStyle = 'rgb(0,26,0)';

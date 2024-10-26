@@ -13,13 +13,14 @@ export default class MazeGenerator {
 	goal: Cell;
 	rng: PRNG;
 
-	constructor(cols = 11, rows = 11) {
+	constructor(seed = '', cols = 11, rows = 11) {
 		this.cols = cols;
 		this.rows = rows;
 		this.width = 40;
 		this.grid = [];
 		this.stack = [];
-		this.rng = seedrandom('h');
+		this.rng =
+			seed.length != 0 ? seedrandom(seed) : seedrandom(this.generateSeed());
 
 		for (let y = 0; y < this.rows; y++) {
 			for (let x = 0; x < this.cols; x++) {
@@ -41,6 +42,11 @@ export default class MazeGenerator {
 		this.grid[0].playerVisited = true;
 
 		console.log(this.grid);
+	}
+
+	generateSeed() {
+		const seed = Math.random().toString(36).slice(2, 7);
+		return seed;
 	}
 
 	updateSize(width: number, ctx: CanvasRenderingContext2D) {

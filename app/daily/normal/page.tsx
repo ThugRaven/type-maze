@@ -2,9 +2,10 @@
 
 import MazeGenerator from '@/classes/MazeGenerator';
 import TypingController from '@/components/TypingController/TypingController';
+import { getDailySeed } from '@/utils/utils';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-const mazeGenerator = new MazeGenerator();
+const mazeGenerator = new MazeGenerator(getDailySeed());
 
 export default function Page() {
 	const [isGoalReached, setIsGoalReached] = useState(false);

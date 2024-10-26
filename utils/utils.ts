@@ -27,3 +27,10 @@ export const seededRandomInt = (
 	max = Math.floor(max);
 	return Math.floor(rng() * (max - min + 1) + min);
 };
+
+export const getDailySeed = () => {
+	const date = new Date();
+	return `${date.getUTCDate()}${
+		date.getUTCMonth() + 1
+	}${date.getUTCFullYear()}`;
+};

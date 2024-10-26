@@ -9,9 +9,15 @@ const geistSans = localFont({
 	weight: '100 900',
 });
 const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+	src: './fonts/GeistMonoVF.woff',
+	variable: '--font-geist-mono',
+	weight: '100 900',
+});
+const montserrat = localFont({
+	src: './fonts/Montserrat.ttf',
+	variable: '--font-montserrat',
+	weight: '100 900',
+});
 });
 
 export const metadata: Metadata = {

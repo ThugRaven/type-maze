@@ -1,7 +1,7 @@
 'use client';
 
 import TypingController from '@/components/TypingController/TypingController';
-import MazeGenerator from './classes/MazeGenerator';
+import MazeGenerator from '../classes/MazeGenerator';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 // const text = 'The quick brown fox jumps over the lazy dog';

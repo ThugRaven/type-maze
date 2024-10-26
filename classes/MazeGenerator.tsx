@@ -1,5 +1,6 @@
 import { line, rect } from '@/utils/shapes';
-import { randomInt } from '@/utils/utils';
+import { seededRandomInt } from '@/utils/utils';
+import seedrandom, { PRNG } from 'seedrandom';
 
 export default class MazeGenerator {
 	cols: number;
@@ -10,6 +11,7 @@ export default class MazeGenerator {
 	stack: Cell[];
 	player: Cell;
 	goal: Cell;
+	rng: PRNG;
 
 	constructor() {
 		this.cols = 11;
@@ -17,6 +19,7 @@ export default class MazeGenerator {
 		this.width = 40;
 		this.grid = [];
 		this.stack = [];
+		this.rng = seedrandom('h');
 
 		for (let y = 0; y < this.rows; y++) {
 			for (let x = 0; x < this.cols; x++) {
@@ -111,8 +114,8 @@ export default class MazeGenerator {
 			}
 		}
 
-		while (this.current.checkNeighbors() || this.stack.length > 0) {
-			const next = this.current.checkNeighbors();
+		while (this.current.checkNeighbors(this.rng) || this.stack.length > 0) {
+			const next = this.current.checkNeighbors(this.rng);
 			if (next) {
 				next.visited = true;
 				this.stack.push(this.current);
@@ -177,7 +180,7 @@ class Cell {
 		return x + y * this.cols;
 	}
 
-	checkNeighbors() {
+	checkNeighbors(rng: PRNG) {
 		const neighbors = [];
 
 		const top = this.grid[this.index(this.x, this.y - 1)];
@@ -199,7 +202,8 @@ class Cell {
 		}
 
 		if (neighbors.length > 0) {
-			const r = randomInt(0, neighbors.length - 1);
+			// const r = randomInt(0, neighbors.length - 1);
+			const r = seededRandomInt(0, neighbors.length - 1, rng);
 			return neighbors[r];
 		} else return null;
 	}

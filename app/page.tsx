@@ -126,8 +126,14 @@ export default function Home() {
 					<div>Incorrect chars: {incorrectChars}</div>
 					<TypedText text={word} index={index} errorsArray={errorsArray} /> */}
 			{isGoalReached && (
-				<div className="absolute inset-0 flex items-center justify-center bg-black/85 z-10">
+				<div className="absolute inset-0 flex flex-col items-center justify-center bg-black/85 z-10">
 					<span className="text-6xl">You{"'"}ve won!</span>
+					<button
+						className="m-4 p-1 bg-gray-500 rounded-md"
+						onClick={() => setIsGoalReached(false)}
+					>
+						Done
+					</button>
 				</div>
 			)}
 			<TypingController onMove={handleOnMove} width={width} pos={pos}>

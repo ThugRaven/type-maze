@@ -197,7 +197,7 @@ export default function TypingController({
 								{totalCorrectChars}
 							</span>
 							/
-							<span title={`${totalCorrectChars} incorrect characters`}>
+							<span title={`${totalIncorrectChars} incorrect characters`}>
 								{totalIncorrectChars}
 							</span>
 						</div>

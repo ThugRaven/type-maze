@@ -28,6 +28,7 @@ export default function TypingController({
 	const [wpm, setWpm] = useState(0);
 	const [moves, setMoves] = useState(0);
 	const [isTracking, setIsTracking] = useState(false);
+	const [isDirectionLabelVisible] = useState(false);
 
 	const getRandomUniqueWord = useCallback((words: string[]) => {
 		const randomWord = en.words[randomInt(0, en.words.length - 1)];
@@ -219,7 +220,7 @@ export default function TypingController({
 			<div className="relative col-start-2 row-start-3 w-full h-full aspect-square">
 				{isTracking && (
 					<div
-						className="absolute grid grid-cols-3 grid-rows-3 transition-transform pointer-events-none text"
+						className="absolute grid grid-cols-3 grid-rows-3 transition-transform pointer-events-none text items-center"
 						style={{
 							transform: `translate(calc(-50% + ${
 								width * pos.x
@@ -236,7 +237,7 @@ export default function TypingController({
 					}px) translate(-50%,-50%)`,
 				}} */}
 						<div className="flex flex-col items-center col-start-2 self-end">
-							<div>Up</div>
+							{isDirectionLabelVisible && <div>Up</div>}
 							<TypingText
 								key={'up' + moveUpWords[0]}
 								words={moveUpWords}
@@ -249,7 +250,7 @@ export default function TypingController({
 							/>
 						</div>
 						<div className="flex flex-col items-center col-start-2 row-start-3 self-start">
-							<div>Down</div>
+							{isDirectionLabelVisible && <div>Down</div>}
 							<TypingText
 								key={'down' + moveDownWords[0]}
 								words={moveDownWords}
@@ -262,7 +263,7 @@ export default function TypingController({
 							/>
 						</div>
 						<div className="col-start-1 row-start-2 justify-self-end">
-							<div>Left</div>
+							{isDirectionLabelVisible && <div>Left</div>}
 							<TypingText
 								key={'left' + moveLeftWords[0]}
 								words={moveLeftWords}
@@ -275,7 +276,7 @@ export default function TypingController({
 							/>
 						</div>
 						<div className="col-start-3 row-start-2 justify-self-start">
-							<div>Right</div>
+							{isDirectionLabelVisible && <div>Right</div>}
 							<TypingText
 								key={'right' + moveRightWords[0]}
 								words={moveRightWords}

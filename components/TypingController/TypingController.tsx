@@ -188,16 +188,41 @@ export default function TypingController({
 
 	return (
 		<div className="grid grid-cols-[auto_0.5fr_auto] grid-rows-[auto_auto_0.5fr_auto] gap-6 items-center justify-items-center">
-			<div className="col-start-2 flex flex-col gap-2">
-				<div className="flex gap-2">
-					<div>Correct chars: {totalCorrectChars}</div>
-					<div>Incorrect chars: {totalIncorrectChars}</div>
-					<div>Current wpm: {Math.round(wpm)}</div>
-					<div>Accuracy: {Math.round(totalAccuracy * 100)}%</div>
-					<div>Direction: {currentDirection}</div>
-					<div>Moves: {moves}</div>
+			<div className="col-start-2 flex flex-col gap-2 bg-zinc-800 rounded-xl px-4 py-3">
+				<div className="flex justify-between gap-6 bg-zinc-700 rounded-xl px-4 py-3">
+					<div className="flex flex-col justify-between items-center">
+						<div>Chars</div>
+						<div>
+							<span title={`${totalCorrectChars} correct characters`}>
+								{totalCorrectChars}
+							</span>
+							/
+							<span title={`${totalCorrectChars} incorrect characters`}>
+								{totalIncorrectChars}
+							</span>
+						</div>
+					</div>
+					<div className="flex w-0.5 bg-zinc-600 rounded-full flex-shrink-0 my-2"></div>
+					<div className="flex flex-col justify-between items-center">
+						<div>WPM</div>
+						<div title={`${Math.round(wpm * 100) / 100} Words Per Minute`}>
+							{Math.round(wpm)}
+						</div>
+					</div>
+					<div className="flex w-0.5 bg-zinc-600 rounded-full flex-shrink-0 my-2"></div>
+					<div className="flex flex-col justify-between items-center">
+						<div>Acc</div>
+						<div title={`${Math.round(totalAccuracy * 100)}% accuracy`}>
+							{Math.round(totalAccuracy * 100)}%
+						</div>
+					</div>
+					<div className="flex w-0.5 bg-zinc-600 rounded-full flex-shrink-0 my-2"></div>
+					<div className="flex flex-col justify-between items-center">
+						<div>Moves</div>
+						<div>{moves}</div>
+					</div>
 				</div>
-				<div>Backspace to cancel the currently typed word</div>
+
 				<div className="flex gap-2">
 					<button
 						onClick={handleClickNormal}

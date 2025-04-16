@@ -1,18 +1,13 @@
-import { ReactNode, useCallback, useEffect, useState } from 'react';
-import en from '../../public/en.json';
+import MazeGenerator from '@/classes/MazeGenerator';
 import { randomInt } from '@/utils/utils';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import en from '../../public/en.json';
 import TypingText from '../TypingText/TypingText';
 
 export default function TypingController({
-	onMove,
-	children,
-	width,
-	pos,
+	mazeGenerator,
 }: {
-	onMove: (direction: string) => void;
-	children: ReactNode;
-	width: number;
-	pos: { x: number; y: number };
+	mazeGenerator: MazeGenerator;
 }) {
 	const [moveUpWords, setMoveUpWords] = useState(['', '']);
 	const [moveDownWords, setMoveDownWords] = useState(['', '']);
@@ -29,6 +24,12 @@ export default function TypingController({
 	const [moves, setMoves] = useState(0);
 	const [isTracking, setIsTracking] = useState(false);
 	const [isDirectionLabelVisible] = useState(false);
+	const [isGoalReached, setIsGoalReached] = useState(false);
+	const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
+	const [width, setWidth] = useState(0);
+	const [pos, setPos] = useState({ x: 0, y: 0 });
+	const canvasRef = useRef<HTMLCanvasElement | null>(null);
+	const canvasContainer = useRef<HTMLDivElement | null>(null);
 
 	const getRandomUniqueWord = useCallback((words: string[]) => {
 		const randomWord = en.words[randomInt(0, en.words.length - 1)];
@@ -186,6 +187,66 @@ export default function TypingController({
 		setIsTracking(true);
 	};
 
+	const handleResize = useCallback(() => {
+		console.log(window.innerWidth, window.innerHeight);
+
+		if (canvasContainer.current && canvasRef.current && ctx) {
+			console.log(canvasRef.current.getBoundingClientRect().width);
+
+			const width = canvasContainer.current.getBoundingClientRect().width;
+			const height = canvasContainer.current.getBoundingClientRect().height;
+			console.log(width, height);
+
+			canvasRef.current.width = Math.floor(Math.min(width, height));
+			canvasRef.current.height = Math.floor(Math.min(width, height));
+
+			const { width: cellWidth } = mazeGenerator.updateSize(width, ctx);
+
+			setWidth(cellWidth);
+		}
+	}, [ctx, mazeGenerator]);
+
+	useEffect(() => {
+		if (ctx) {
+			handleResize();
+			mazeGenerator.draw(ctx);
+		}
+	}, [ctx, handleResize, mazeGenerator]);
+
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) {
+			return;
+		}
+
+		const ctx = canvas.getContext('2d');
+		if (!ctx) {
+			return;
+		}
+		setCtx(ctx);
+	}, []);
+
+	const onMove = (direction: string) => {
+		if (!ctx) {
+			return;
+		}
+
+		console.log('move: ', direction);
+		const playerPos = mazeGenerator.move(direction, () => {
+			setIsGoalReached(true);
+		});
+		mazeGenerator.draw(ctx);
+		setPos(playerPos);
+	};
+
+	useEffect(() => {
+		window.addEventListener('resize', handleResize);
+
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	}, [handleResize]);
+
 	return (
 		<div className="grid grid-cols-[8rem_1fr_8rem] grid-rows-[auto_auto_0.5fr_auto] gap-6 items-center justify-items-center w-full h-full">
 			<div className="col-start-2 flex flex-col gap-2 bg-zinc-800 rounded-xl px-4 py-3">
@@ -242,6 +303,17 @@ export default function TypingController({
 					</button>
 				</div>
 			</div>
+			{isGoalReached && (
+				<div className="absolute inset-0 flex flex-col items-center justify-center bg-black/85 z-10">
+					<span className="text-6xl">You{"'"}ve won!</span>
+					<button
+						className="m-4 p-1 bg-gray-500 rounded-md"
+						onClick={() => setIsGoalReached(false)}
+					>
+						Done
+					</button>
+				</div>
+			)}
 			<div className="relative col-start-2 row-start-3 h-full aspect-square">
 				{isTracking && (
 					<div
@@ -315,7 +387,9 @@ export default function TypingController({
 						</div>
 					</div>
 				)}
-				{children}
+				<div ref={canvasContainer} className="w-full h-full">
+					<canvas ref={canvasRef}></canvas>
+				</div>
 			</div>
 			{!isTracking && (
 				<>

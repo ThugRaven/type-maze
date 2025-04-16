@@ -187,7 +187,7 @@ export default function TypingController({
 	};
 
 	return (
-		<div className="grid grid-cols-[auto_0.5fr_auto] grid-rows-[auto_auto_0.5fr_auto] gap-6 items-center justify-items-center">
+		<div className="grid grid-cols-[8rem_1fr_8rem] grid-rows-[auto_auto_0.5fr_auto] gap-6 items-center justify-items-center w-full h-full">
 			<div className="col-start-2 flex flex-col gap-2 bg-zinc-800 rounded-xl px-4 py-3">
 				<div className="flex justify-between gap-6 bg-zinc-700 rounded-xl px-4 py-3">
 					<div className="flex flex-col justify-between items-center">
@@ -242,7 +242,7 @@ export default function TypingController({
 					</button>
 				</div>
 			</div>
-			<div className="relative col-start-2 row-start-3 w-full h-full aspect-square">
+			<div className="relative col-start-2 row-start-3 h-full aspect-square">
 				{isTracking && (
 					<div
 						className="absolute grid grid-cols-3 grid-rows-3 transition-transform pointer-events-none text items-center"

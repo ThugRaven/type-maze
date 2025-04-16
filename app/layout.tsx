@@ -56,7 +56,9 @@ export default function RootLayout({
 							</li>
 						</ul>
 					</nav>
-					<main className="flex flex-col gap-8 items-center">{children}</main>
+					<main className="flex flex-col gap-8 items-center h-full w-full font-mono">
+						{children}
+					</main>
 				</div>
 			</body>
 		</html>

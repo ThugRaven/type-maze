@@ -63,7 +63,7 @@ export const TypedText = ({
 	};
 
 	return (
-		<div className="flex flex-wrap">
+		<div className="flex flex-wrap justify-center">
 			<div>
 				<span className="text-gray-600">
 					{getStyledText(text, 0, index, 'completed')}

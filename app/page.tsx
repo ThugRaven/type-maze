@@ -113,7 +113,7 @@ export default function Home() {
 	// }, [handleKeyDown]);
 
 	return (
-		<div className="font-mono">
+		<>
 			{/* <div>
 						{new Intl.DateTimeFormat('en-US', {
 							timeStyle: 'full',
@@ -138,12 +138,12 @@ export default function Home() {
 			)}
 			<TypingController onMove={handleOnMove} width={width} pos={pos}>
 				<div ref={canvasContainer} className="w-full h-full ">
-					<canvas ref={canvasRef} className=""></canvas>
+					<canvas ref={canvasRef} className="w-full h-full"></canvas>
 				</div>
 				{/* <div className="grid grid-cols-10 grid-rows-10">{maze}</div> */}
 				{/* className="w-36 h-36" */}
 			</TypingController>
 			{/* <TypingContainer></TypingContainer> */}
-		</div>
+		</>
 	);
 }

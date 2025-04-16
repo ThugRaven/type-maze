@@ -107,7 +107,7 @@ export default class MazeGenerator {
 		ctx.strokeStyle = 'white';
 		this.current.visited = true;
 
-		ctx.fillStyle = 'rgb(26,26,26)';
+		ctx.fillStyle = 'rgb(11,8,9)';
 		for (let x = 0; x < this.cols; x += 1) {
 			if (x % 2 != 0) {
 				rect(ctx, x * this.width, 0, this.width, this.rows * this.width);

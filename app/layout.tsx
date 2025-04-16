@@ -37,7 +37,7 @@ export default function RootLayout({
 	return (
 		<html lang="en" className="h-full">
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${robotoMono.variable} antialiased h-full`}
+				className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${robotoMono.variable} antialiased h-full bg-zinc-900`}
 			>
 				<div className="grid grid-rows-[auto_1fr] items-center justify-items-center h-full gap-16 font-[family-name:var(--font-geist-sans)]">
 					<nav>

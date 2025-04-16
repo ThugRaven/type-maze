@@ -6,8 +6,10 @@ import TypingText from '../TypingText/TypingText';
 
 export default function TypingController({
 	mazeGenerator,
+	onRestart,
 }: {
 	mazeGenerator: MazeGenerator;
+	onRestart: () => void;
 }) {
 	const [moveUpWords, setMoveUpWords] = useState(['', '']);
 	const [moveDownWords, setMoveDownWords] = useState(['', '']);
@@ -239,6 +241,11 @@ export default function TypingController({
 		setPos(playerPos);
 	};
 
+	const handleOnRestart = () => {
+		setIsGoalReached(false);
+		onRestart();
+	};
+
 	useEffect(() => {
 		window.addEventListener('resize', handleResize);
 
@@ -248,7 +255,7 @@ export default function TypingController({
 	}, [handleResize]);
 
 	return (
-		<div className="grid grid-cols-[8rem_1fr_8rem] grid-rows-[auto_auto_0.5fr_auto] gap-6 items-center justify-items-center w-full h-full">
+		<div className="grid grid-cols-[8rem_1fr_8rem] grid-rows-[auto_auto_0.5fr_auto_auto] gap-6 items-center justify-items-center w-full h-full">
 			<div className="col-start-2 flex flex-col gap-2 bg-zinc-800 rounded-xl px-4 py-3">
 				<div className="flex justify-between gap-6 bg-zinc-700 rounded-xl px-4 py-3">
 					<div className="flex flex-col justify-between items-center">
@@ -284,38 +291,30 @@ export default function TypingController({
 					</div>
 				</div>
 
-				<div className="flex gap-2">
-					<button
-						onClick={handleClickNormal}
-						className={`${
-							isTracking ? 'bg-red-500' : 'bg-green-500'
-						} p-1 rounded-md`}
-					>
-						Normal
-					</button>
-					<button
-						onClick={handleClickTracking}
-						className={`${
-							isTracking ? 'bg-green-500' : 'bg-red-500'
-						} p-1 rounded-md`}
-					>
-						Tracking
-					</button>
-				</div>
+				{!isGoalReached && (
+					<div className="flex gap-2">
+						<button
+							onClick={handleClickNormal}
+							className={`${
+								isTracking ? 'bg-red-500' : 'bg-green-500'
+							} p-1 rounded-md`}
+						>
+							Normal
+						</button>
+						<button
+							onClick={handleClickTracking}
+							className={`${
+								isTracking ? 'bg-green-500' : 'bg-red-500'
+							} p-1 rounded-md`}
+						>
+							Tracking
+						</button>
+					</div>
+				)}
 			</div>
-			{isGoalReached && (
-				<div className="absolute inset-0 flex flex-col items-center justify-center bg-black/85 z-10">
-					<span className="text-6xl">You{"'"}ve won!</span>
-					<button
-						className="m-4 p-1 bg-gray-500 rounded-md"
-						onClick={() => setIsGoalReached(false)}
-					>
-						Done
-					</button>
-				</div>
-			)}
+
 			<div className="relative col-start-2 row-start-3 h-full aspect-square">
-				{isTracking && (
+				{isTracking && !isGoalReached && (
 					<div
 						className="absolute grid grid-cols-3 grid-rows-3 transition-transform pointer-events-none text items-center"
 						style={{
@@ -391,7 +390,7 @@ export default function TypingController({
 					<canvas ref={canvasRef}></canvas>
 				</div>
 			</div>
-			{!isTracking && (
+			{!isTracking && !isGoalReached && (
 				<>
 					<div className="flex flex-col items-center col-start-2 self-end">
 						<div>Up</div>
@@ -448,6 +447,16 @@ export default function TypingController({
 				</>
 			)}
 
+			{isGoalReached && (
+				<div className="col-start-2 row-start-5">
+					<button
+						className="m-4 p-2 bg-zinc-700 rounded-md"
+						onClick={() => handleOnRestart()}
+					>
+						Restart
+					</button>
+				</div>
+			)}
 			{/* <div>Words</div>
 			<div>{moveUpWords.join(' ')}</div>
 			<div>{moveDownWords.join(' ')}</div>

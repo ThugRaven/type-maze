@@ -357,7 +357,15 @@ export default function TypingController({
 					}px) translate(-50%,-50%)`,
 				}} */}
 						<div className="flex flex-col items-center col-start-2 self-end">
-							{isDirectionLabelVisible && <div>Up</div>}
+							{isDirectionLabelVisible && (
+								<div
+									className={`${
+										currentDirection == 'up' ? 'text-red-500' : ''
+									} transition-colors duration-75`}
+								>
+									Up
+								</div>
+							)}
 							<TypingText
 								key={'up' + moveUpWords[0]}
 								words={moveUpWords}
@@ -370,7 +378,15 @@ export default function TypingController({
 							/>
 						</div>
 						<div className="flex flex-col items-center col-start-2 row-start-3 self-start">
-							{isDirectionLabelVisible && <div>Down</div>}
+							{isDirectionLabelVisible && (
+								<div
+									className={`${
+										currentDirection == 'down' ? 'text-red-500' : ''
+									} transition-colors duration-75`}
+								>
+									Down
+								</div>
+							)}
 							<TypingText
 								key={'down' + moveDownWords[0]}
 								words={moveDownWords}
@@ -383,7 +399,15 @@ export default function TypingController({
 							/>
 						</div>
 						<div className="col-start-1 row-start-2 justify-self-end">
-							{isDirectionLabelVisible && <div className="text-end">Left</div>}
+							{isDirectionLabelVisible && (
+								<div
+									className={`${
+										currentDirection == 'left' ? 'text-red-500' : ''
+									} text-end transition-colors duration-75`}
+								>
+									Left
+								</div>
+							)}
 							<TypingText
 								key={'left' + moveLeftWords[0]}
 								words={moveLeftWords}
@@ -396,7 +420,15 @@ export default function TypingController({
 							/>
 						</div>
 						<div className="col-start-3 row-start-2 justify-self-start">
-							{isDirectionLabelVisible && <div>Right</div>}
+							{isDirectionLabelVisible && (
+								<div
+									className={`${
+										currentDirection == 'right' ? 'text-red-500' : ''
+									} transition-colors duration-75`}
+								>
+									Right
+								</div>
+							)}
 							<TypingText
 								key={'right' + moveRightWords[0]}
 								words={moveRightWords}
@@ -417,7 +449,13 @@ export default function TypingController({
 			{!isTracking && !isGoalReached && (
 				<>
 					<div className="flex flex-col items-center col-start-2 self-end">
-						<div>Up</div>
+						<div
+							className={`${
+								currentDirection == 'up' ? 'text-red-500' : ''
+							} transition-colors duration-75`}
+						>
+							Up
+						</div>
 						<TypingText
 							key={'up' + moveUpWords[0]}
 							words={moveUpWords}
@@ -430,7 +468,13 @@ export default function TypingController({
 						/>
 					</div>
 					<div className="flex flex-col items-center col-start-2 row-start-4 self-start">
-						<div>Down</div>
+						<div
+							className={`${
+								currentDirection == 'down' ? 'text-red-500' : ''
+							} transition-colors duration-75`}
+						>
+							Down
+						</div>
 						<TypingText
 							key={'down' + moveDownWords[0]}
 							words={moveDownWords}
@@ -443,7 +487,13 @@ export default function TypingController({
 						/>
 					</div>
 					<div className="col-start-1 row-start-3 justify-self-end">
-						<div className="text-end">Left</div>
+						<div
+							className={`${
+								currentDirection == 'left' ? 'text-red-500' : ''
+							} text-end transition-colors duration-75`}
+						>
+							Left
+						</div>
 						<TypingText
 							key={'left' + moveLeftWords[0]}
 							words={moveLeftWords}
@@ -456,7 +506,13 @@ export default function TypingController({
 						/>
 					</div>
 					<div className="col-start-3 row-start-3 justify-self-start">
-						<div>Right</div>
+						<div
+							className={`${
+								currentDirection == 'right' ? 'text-red-500' : ''
+							} transition-colors duration-75`}
+						>
+							Right
+						</div>
 						<TypingText
 							key={'right' + moveRightWords[0]}
 							words={moveRightWords}

@@ -2,14 +2,26 @@
 
 import MazeGenerator from '@/classes/MazeGenerator';
 import TypingController from '@/components/TypingController/TypingController';
-import { getDailySeed } from '@/utils/utils';
+import { getDailySeed, random } from '@/utils/utils';
+import { useState } from 'react';
 
-const mazeGenerator = new MazeGenerator(getDailySeed(), 15, 15);
+let mazeGenerator = new MazeGenerator(getDailySeed(), 15, 15);
 
 export default function Page() {
+	const [gameId, setGameId] = useState(random(0, 1));
+
+	const handleOnRestart = () => {
+		setGameId(random(0, 1));
+		mazeGenerator = new MazeGenerator(getDailySeed(), 15, 15);
+	};
+
 	return (
 		<div className="font-mono">
-			<TypingController mazeGenerator={mazeGenerator} />
+			<TypingController
+				mazeGenerator={mazeGenerator}
+				key={gameId}
+				onRestart={handleOnRestart}
+			/>
 		</div>
 	);
 }

@@ -22,7 +22,13 @@ export default function TypingText({
 		incorrectChars: number,
 	) => void;
 	onStart: (startTime: Date) => void;
-	onReset: () => void;
+	onReset: (
+		word: string,
+		typeTime: number,
+		endTime: Date,
+		correctChars: number,
+		incorrectChars: number,
+	) => void;
 	onCheckDirection: (
 		direction: 'up' | 'down' | 'left' | 'right',
 		isCorrect: boolean,

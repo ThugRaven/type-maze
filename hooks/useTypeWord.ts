@@ -11,7 +11,13 @@ export default function useTypeWord(
 		incorrectChars: number,
 	) => void,
 	onStart: (startTime: Date) => void,
-	onReset: () => void,
+	onReset: (
+		word: string,
+		typeTime: number,
+		endTime: Date,
+		correctChars: number,
+		incorrectChars: number,
+	) => void,
 ) {
 	const wordToType = word.length > 0 ? word.concat(' ') : word;
 	const [index, setIndex] = useState(0);
@@ -34,7 +40,14 @@ export default function useTypeWord(
 
 	const handleType = (key: string) => {
 		if (key === 'Backspace') {
-			onReset();
+			const endTime = new Date();
+			const typeTime = startTime
+				? (endTime.getTime() - startTime.getTime()) / 1000
+				: 0;
+			console.log('end', typeTime);
+			setStartTime(null);
+			// Penalize the user by adding one incorrect char
+			onReset(wordToType, typeTime, endTime, correctChars, incorrectChars + 1);
 			return;
 		}
 

@@ -63,7 +63,13 @@ export default function TypingController({
 		}
 	};
 
-	const handleOnReset = () => {
+	const handleOnReset = (
+		word: string,
+		typeTime: number,
+		endTime: Date,
+		correctChars: number,
+		incorrectChars: number,
+	) => {
 		if (currentDirection === 'up') {
 			const newWord = getRandomUniqueWord([
 				...moveDownWords,
@@ -98,7 +104,28 @@ export default function TypingController({
 			setMoveRightWords([moveRightWords[1], newWord]);
 		}
 
+		const newTotalCorrectChars = totalCorrectChars + correctChars;
+		setTotalCorrectChars(newTotalCorrectChars);
+		const newTotalIncorrectChars = totalIncorrectChars + incorrectChars;
+		setTotalIncorrectChars(newTotalIncorrectChars);
+		setTotalAccuracy(
+			newTotalCorrectChars / (newTotalCorrectChars + newTotalIncorrectChars),
+		);
+		const totalTime = startTime
+			? (endTime.getTime() - startTime.getTime()) / 1000
+			: 0;
+
+		const currentWpm = newTotalCorrectChars / 5 / (totalTime / 60);
+		console.log(
+			startTime,
+			endTime,
+			totalTime,
+			currentWpm,
+			newTotalCorrectChars,
+		);
+		setWpm(currentWpm);
 		setCurrentDirection(null);
+		setMoves((v) => v + 1);
 	};
 
 	const handleOnWordTyped = (

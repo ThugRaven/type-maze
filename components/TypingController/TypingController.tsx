@@ -383,7 +383,7 @@ export default function TypingController({
 							/>
 						</div>
 						<div className="col-start-1 row-start-2 justify-self-end">
-							{isDirectionLabelVisible && <div>Left</div>}
+							{isDirectionLabelVisible && <div className="text-end">Left</div>}
 							<TypingText
 								key={'left' + moveLeftWords[0]}
 								words={moveLeftWords}
@@ -443,7 +443,7 @@ export default function TypingController({
 						/>
 					</div>
 					<div className="col-start-1 row-start-3 justify-self-end">
-						<div>Left</div>
+						<div className="text-end">Left</div>
 						<TypingText
 							key={'left' + moveLeftWords[0]}
 							words={moveLeftWords}

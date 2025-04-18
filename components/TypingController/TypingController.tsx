@@ -21,7 +21,6 @@ export default function TypingController({
 	const [startTime, setStartTime] = useState<Date | null>(null);
 	const [totalCorrectChars, setTotalCorrectChars] = useState(0);
 	const [totalIncorrectChars, setTotalIncorrectChars] = useState(0);
-	const [totalAccuracy, setTotalAccuracy] = useState(0);
 	const [wpm, setWpm] = useState(0);
 	const [moves, setMoves] = useState(0);
 	const [isTracking, setIsTracking] = useState(false);
@@ -32,6 +31,10 @@ export default function TypingController({
 	const [pos, setPos] = useState({ x: 0, y: 0 });
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const canvasContainer = useRef<HTMLDivElement | null>(null);
+	const totalAccuracy =
+		totalCorrectChars + totalIncorrectChars === 0
+			? 0
+			: totalCorrectChars / (totalCorrectChars + totalIncorrectChars);
 
 	const getRandomUniqueWord = useCallback((words: string[]) => {
 		const randomWord = en.words[randomInt(0, en.words.length - 1)];
@@ -108,9 +111,6 @@ export default function TypingController({
 		setTotalCorrectChars(newTotalCorrectChars);
 		const newTotalIncorrectChars = totalIncorrectChars + incorrectChars;
 		setTotalIncorrectChars(newTotalIncorrectChars);
-		setTotalAccuracy(
-			newTotalCorrectChars / (newTotalCorrectChars + newTotalIncorrectChars),
-		);
 		const totalTime = startTime
 			? (endTime.getTime() - startTime.getTime()) / 1000
 			: 0;
@@ -178,9 +178,6 @@ export default function TypingController({
 		setTotalCorrectChars(newTotalCorrectChars);
 		const newTotalIncorrectChars = totalIncorrectChars + incorrectChars;
 		setTotalIncorrectChars(newTotalIncorrectChars);
-		setTotalAccuracy(
-			newTotalCorrectChars / (newTotalCorrectChars + newTotalIncorrectChars),
-		);
 		const totalTime = startTime
 			? (endTime.getTime() - startTime.getTime()) / 1000
 			: 0;

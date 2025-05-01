@@ -215,7 +215,9 @@ export default function TypingController({
 			? (endTime.getTime() - startTime.getTime()) / 1000
 			: 0;
 
-		const currentWpm = newTotalCorrectChars / 5 / (totalTime / 60);
+		const currentWpm =
+			totalTime != 0 ? newTotalCorrectChars / 5 / (totalTime / 60) : 0;
+
 		console.log(
 			startTime,
 			endTime,
@@ -328,13 +330,6 @@ export default function TypingController({
 					</div>
 					<div className="flex w-0.5 bg-zinc-600 rounded-full flex-shrink-0 my-2"></div>
 					<div className="flex flex-col justify-between items-center">
-						<div>WPM</div>
-						<div title={`${Math.round(wpm * 100) / 100} Words Per Minute`}>
-							{Math.round(wpm)}
-						</div>
-					</div>
-					<div className="flex w-0.5 bg-zinc-600 rounded-full flex-shrink-0 my-2"></div>
-					<div className="flex flex-col justify-between items-center">
 						<div>Acc</div>
 						<div title={`${Math.round(totalAccuracy * 100)}% accuracy`}>
 							{Math.round(totalAccuracy * 100)}%
@@ -344,6 +339,18 @@ export default function TypingController({
 					<div className="flex flex-col justify-between items-center">
 						<div>Moves</div>
 						<div>{moves}</div>
+					</div>
+				</div>
+
+				<div className="flex justify-center gap-6 bg-zinc-700 rounded-xl px-4 py-3">
+					<div className="flex flex-col justify-between items-center">
+						<div className="text-lg">WPM</div>
+						<div
+							className="text-6xl"
+							title={`${Math.round(wpm * 100) / 100} Words Per Minute`}
+						>
+							{Math.round(wpm)}
+						</div>
 					</div>
 				</div>
 

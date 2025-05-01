@@ -3,9 +3,8 @@ const regex = new RegExp('^[a-zA-Z0-9 &,._-]$');
 
 export default function useTypeWord(
 	word: string,
-	onWordTyped: (
-		word: string,
-		typeTime: number,
+	onWordTyped: (typeTime: number) => void,
+	onLetterTyped: (
 		endTime: Date,
 		correctChars: number,
 		incorrectChars: number,
@@ -67,10 +66,12 @@ export default function useTypeWord(
 				console.log('correct');
 
 				totalCorrectChars++;
+				onLetterTyped(new Date(), 1, 0);
 				setCorrectChars(totalCorrectChars);
 			} else {
 				console.log('incorrect');
 
+				onLetterTyped(new Date(), 0, 1);
 				setErrorsArray((array) =>
 					array.map((error, i) => {
 						if (i === index && !error) {
@@ -91,15 +92,7 @@ export default function useTypeWord(
 					: 0;
 				console.log('end', typeTime);
 				setStartTime(null);
-				onWordTyped(
-					wordToType,
-					typeTime,
-					endTime,
-					totalCorrectChars,
-					incorrectChars,
-				);
-				// setTextWpm((correctChars + 1) / 5 / (fullTime / 60));
-				// setAccuracy((correctChars + 1) / word.length);
+				onWordTyped(typeTime);
 			}
 		}
 	};

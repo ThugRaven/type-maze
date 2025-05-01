@@ -158,13 +158,7 @@ export default function TypingController({
 		setMoves((v) => v + 1);
 	};
 
-	const handleOnWordTyped = (
-		word: string,
-		typeTime: number,
-		endTime: Date,
-		correctChars: number,
-		incorrectChars: number,
-	) => {
+	const handleOnWordTyped = (typeTime: number) => {
 		console.log('Finished in ', typeTime);
 		if (currentDirection === 'up') {
 			const newWord = getRandomUniqueWord([
@@ -204,6 +198,15 @@ export default function TypingController({
 			onMove('right');
 		}
 
+		setCurrentDirection(null);
+		setMoves((v) => v + 1);
+	};
+
+	const handleOnLetterTyped = (
+		endTime: Date,
+		correctChars: number,
+		incorrectChars: number,
+	) => {
 		const newTotalCorrectChars = totalCorrectChars + correctChars;
 		setTotalCorrectChars(newTotalCorrectChars);
 		const newTotalIncorrectChars = totalIncorrectChars + incorrectChars;
@@ -221,8 +224,6 @@ export default function TypingController({
 			newTotalCorrectChars,
 		);
 		setWpm(currentWpm);
-		setCurrentDirection(null);
-		setMoves((v) => v + 1);
 	};
 
 	const handleCheckDirection = (
@@ -403,6 +404,7 @@ export default function TypingController({
 								direction={'up'}
 								currentDirection={currentDirection}
 								onWordTyped={handleOnWordTyped}
+								onLetterTyped={handleOnLetterTyped}
 								onStart={handleOnStart}
 								onReset={handleOnReset}
 								onCheckDirection={handleCheckDirection}
@@ -424,6 +426,7 @@ export default function TypingController({
 								direction={'down'}
 								currentDirection={currentDirection}
 								onWordTyped={handleOnWordTyped}
+								onLetterTyped={handleOnLetterTyped}
 								onStart={handleOnStart}
 								onReset={handleOnReset}
 								onCheckDirection={handleCheckDirection}
@@ -445,6 +448,7 @@ export default function TypingController({
 								direction={'left'}
 								currentDirection={currentDirection}
 								onWordTyped={handleOnWordTyped}
+								onLetterTyped={handleOnLetterTyped}
 								onStart={handleOnStart}
 								onReset={handleOnReset}
 								onCheckDirection={handleCheckDirection}
@@ -466,6 +470,7 @@ export default function TypingController({
 								direction={'right'}
 								currentDirection={currentDirection}
 								onWordTyped={handleOnWordTyped}
+								onLetterTyped={handleOnLetterTyped}
 								onStart={handleOnStart}
 								onReset={handleOnReset}
 								onCheckDirection={handleCheckDirection}
@@ -493,6 +498,7 @@ export default function TypingController({
 							direction={'up'}
 							currentDirection={currentDirection}
 							onWordTyped={handleOnWordTyped}
+							onLetterTyped={handleOnLetterTyped}
 							onStart={handleOnStart}
 							onReset={handleOnReset}
 							onCheckDirection={handleCheckDirection}
@@ -512,6 +518,7 @@ export default function TypingController({
 							direction={'down'}
 							currentDirection={currentDirection}
 							onWordTyped={handleOnWordTyped}
+							onLetterTyped={handleOnLetterTyped}
 							onStart={handleOnStart}
 							onReset={handleOnReset}
 							onCheckDirection={handleCheckDirection}
@@ -531,6 +538,7 @@ export default function TypingController({
 							direction={'left'}
 							currentDirection={currentDirection}
 							onWordTyped={handleOnWordTyped}
+							onLetterTyped={handleOnLetterTyped}
 							onStart={handleOnStart}
 							onReset={handleOnReset}
 							onCheckDirection={handleCheckDirection}
@@ -550,6 +558,7 @@ export default function TypingController({
 							direction={'right'}
 							currentDirection={currentDirection}
 							onWordTyped={handleOnWordTyped}
+							onLetterTyped={handleOnLetterTyped}
 							onStart={handleOnStart}
 							onReset={handleOnReset}
 							onCheckDirection={handleCheckDirection}

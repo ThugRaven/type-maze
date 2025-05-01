@@ -7,6 +7,7 @@ export default function TypingText({
 	direction,
 	currentDirection,
 	onWordTyped,
+	onLetterTyped,
 	onStart,
 	onReset,
 	onCheckDirection,
@@ -14,9 +15,8 @@ export default function TypingText({
 	words: string[];
 	direction: 'up' | 'down' | 'left' | 'right';
 	currentDirection: 'up' | 'down' | 'left' | 'right' | null;
-	onWordTyped: (
-		word: string,
-		typeTime: number,
+	onWordTyped: (typeTime: number) => void;
+	onLetterTyped: (
 		endTime: Date,
 		correctChars: number,
 		incorrectChars: number,
@@ -40,6 +40,7 @@ export default function TypingText({
 	const { word, index, errorsArray, onType, onCheck } = useTypeWord(
 		currentWord,
 		onWordTyped,
+		onLetterTyped,
 		onStart,
 		onReset,
 	);

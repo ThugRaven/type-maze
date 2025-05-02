@@ -20,7 +20,6 @@ export default function TypingController({
 		'up' | 'down' | 'left' | 'right' | null
 	>(null);
 	const [startTime, setStartTime] = useState<Date | null>(null);
-	const [endTime, setEndTime] = useState<Date | null>(null);
 	const [totalCorrectChars, setTotalCorrectChars] = useState(0);
 	const [totalIncorrectChars, setTotalIncorrectChars] = useState(0);
 	const [wpm, setWpm] = useState(0);
@@ -70,16 +69,6 @@ export default function TypingController({
 
 	useInterval(
 		() => {
-			if (endTime) {
-				const totalTime = startTime
-					? (new Date().getTime() - startTime.getTime()) / 1000
-					: 0;
-
-				const newWpm = totalCorrectChars / 5 / (totalTime / 60);
-				setWpm(newWpm);
-				return;
-			}
-
 			const totalTime = startTime
 				? (new Date().getTime() - startTime.getTime()) / 1000
 				: 0;
@@ -286,7 +275,12 @@ export default function TypingController({
 		console.log('move: ', direction);
 		const playerPos = mazeGenerator.move(direction, () => {
 			setIsGoalReached(true);
-			setEndTime(new Date());
+			const totalTime = startTime
+				? (new Date().getTime() - startTime.getTime()) / 1000
+				: 0;
+
+			const newWpm = totalCorrectChars / 5 / (totalTime / 60);
+			setWpm(newWpm);
 		});
 		mazeGenerator.draw(ctx);
 		setPos(playerPos);

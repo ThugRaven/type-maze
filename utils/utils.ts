@@ -34,3 +34,16 @@ export const getDailySeed = () => {
 		date.getUTCMonth() + 1
 	}${date.getUTCFullYear()}`;
 };
+
+export const formatDuration = (duration: number) => {
+	const minutes = Math.floor(duration / 60);
+	const seconds = duration % 60;
+
+	return `${
+		duration < 60
+			? `${duration.toFixed(2)}s`
+			: `${minutes < 10 ? '0' : ''}${minutes}:${
+					seconds < 10 ? '0' : ''
+			  }${Math.floor(seconds)}`
+	}`;
+};

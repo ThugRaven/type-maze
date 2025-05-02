@@ -1,9 +1,9 @@
 import MazeGenerator from '@/classes/MazeGenerator';
-import { randomInt } from '@/utils/utils';
+import useInterval from '@/hooks/useInterval';
+import { formatDuration, randomInt } from '@/utils/utils';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import en from '../../public/en.json';
 import TypingText from '../TypingText/TypingText';
-import useInterval from '@/hooks/useInterval';
 
 export default function TypingController({
 	mazeGenerator,
@@ -36,6 +36,7 @@ export default function TypingController({
 		totalCorrectChars + totalIncorrectChars === 0
 			? 0
 			: totalCorrectChars / (totalCorrectChars + totalIncorrectChars);
+	const [totalTime, setTotalTime] = useState<number | null>(null);
 
 	const getRandomUniqueWord = useCallback((words: string[]) => {
 		const randomWord = en.words[randomInt(0, en.words.length - 1)];
@@ -77,6 +78,16 @@ export default function TypingController({
 			setWpm(newWpm);
 		},
 		startTime !== null && !isGoalReached ? 1000 : null,
+	);
+
+	useInterval(
+		() => {
+			const totalTime = startTime
+				? (new Date().getTime() - startTime.getTime()) / 1000
+				: 0;
+			setTotalTime(totalTime);
+		},
+		startTime !== null && !isGoalReached ? 75 : null,
 	);
 
 	const handleOnReset = (
@@ -326,6 +337,15 @@ export default function TypingController({
 					<div className="flex flex-col justify-between items-center">
 						<div>Moves</div>
 						<div>{moves}</div>
+					</div>
+				</div>
+
+				<div className="flex justify-center gap-6 bg-zinc-700 rounded-xl px-4 py-3">
+					<div className="flex flex-col justify-between items-center">
+						<div>Time</div>
+						<div className="text-2xl" title={`${totalTime} Words Per Minute`}>
+							{totalTime ? formatDuration(totalTime) : '0'}
+						</div>
 					</div>
 				</div>
 

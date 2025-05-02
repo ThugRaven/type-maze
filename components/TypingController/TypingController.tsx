@@ -26,7 +26,7 @@ export default function TypingController({
 	const [moves, setMoves] = useState(0);
 	const [isTracking, setIsTracking] = useState(false);
 	const [isDirectionLabelVisible] = useState(false);
-	const [isGoalReached, setIsGoalReached] = useState(false);
+	const [isFinished, setIsFinished] = useState(false);
 	const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
 	const [width, setWidth] = useState(0);
 	const [pos, setPos] = useState({ x: 0, y: 0 });
@@ -36,7 +36,9 @@ export default function TypingController({
 		totalCorrectChars + totalIncorrectChars === 0
 			? 0
 			: totalCorrectChars / (totalCorrectChars + totalIncorrectChars);
+	const [endTime, setEndTime] = useState<Date | null>(null);
 	const [totalTime, setTotalTime] = useState<number | null>(null);
+	const [wasAfk, setWasAfk] = useState(false);
 
 	const getRandomUniqueWord = useCallback((words: string[]) => {
 		const randomWord = en.words[randomInt(0, en.words.length - 1)];
@@ -77,7 +79,7 @@ export default function TypingController({
 			const newWpm = totalCorrectChars / 5 / (totalTime / 60);
 			setWpm(newWpm);
 		},
-		startTime !== null && !isGoalReached ? 1000 : null,
+		startTime !== null && !isFinished ? 1000 : null,
 	);
 
 	useInterval(
@@ -87,8 +89,32 @@ export default function TypingController({
 				: 0;
 			setTotalTime(totalTime);
 		},
-		startTime !== null && !isGoalReached ? 75 : null,
+		startTime !== null && !isFinished ? 75 : null,
 	);
+
+	useEffect(() => {
+		if (isFinished) {
+			console.log('finished - not afk');
+			return;
+		}
+
+		const id = setTimeout(() => {
+			if (endTime) {
+				setWasAfk(true);
+				setIsFinished(true);
+				const totalTime = startTime
+					? (endTime.getTime() - startTime.getTime()) / 1000
+					: 0;
+
+				const newWpm = totalCorrectChars / 5 / (totalTime / 60);
+				setWpm(newWpm);
+			}
+		}, 30 * 1000);
+
+		return () => {
+			clearTimeout(id);
+		};
+	}, [endTime, isFinished, startTime, totalCorrectChars]);
 
 	const handleOnReset = (
 		word: string,
@@ -212,6 +238,7 @@ export default function TypingController({
 		const currentWpm =
 			totalTime != 0 ? newTotalCorrectChars / 5 / (totalTime / 60) : 0;
 
+		setEndTime(endTime);
 		console.log(
 			startTime,
 			endTime,
@@ -285,7 +312,7 @@ export default function TypingController({
 
 		console.log('move: ', direction);
 		const playerPos = mazeGenerator.move(direction, () => {
-			setIsGoalReached(true);
+			setIsFinished(true);
 			const totalTime = startTime
 				? (new Date().getTime() - startTime.getTime()) / 1000
 				: 0;
@@ -298,7 +325,7 @@ export default function TypingController({
 	};
 
 	const handleOnRestart = () => {
-		setIsGoalReached(false);
+		setIsFinished(false);
 		onRestart();
 	};
 
@@ -361,7 +388,7 @@ export default function TypingController({
 					</div>
 				</div>
 
-				{!isGoalReached && (
+				{!isFinished && (
 					<div className="flex gap-2">
 						<button
 							onClick={handleClickNormal}
@@ -384,7 +411,7 @@ export default function TypingController({
 			</div>
 
 			<div className="relative col-start-2 row-start-3 h-full aspect-square">
-				{isTracking && !isGoalReached && (
+				{isTracking && !isFinished && (
 					<div
 						className="absolute grid grid-cols-3 grid-rows-3 transition-transform pointer-events-none text items-center"
 						style={{
@@ -496,7 +523,7 @@ export default function TypingController({
 					<canvas ref={canvasRef}></canvas>
 				</div>
 			</div>
-			{!isTracking && !isGoalReached && (
+			{!isTracking && !isFinished && (
 				<>
 					<div className="flex flex-col items-center col-start-2 self-end">
 						<div
@@ -581,7 +608,13 @@ export default function TypingController({
 				</>
 			)}
 
-			{isGoalReached && (
+			{isFinished && wasAfk && (
+				<span className="col-start-2 text-2xl font-bold">
+					Test Invalid - AFK
+				</span>
+			)}
+
+			{isFinished && (
 				<div className="col-start-2 row-start-5">
 					<button
 						className="m-4 p-2 bg-zinc-700 rounded-md"

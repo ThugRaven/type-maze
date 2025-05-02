@@ -3,6 +3,7 @@ import { randomInt } from '@/utils/utils';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import en from '../../public/en.json';
 import TypingText from '../TypingText/TypingText';
+import useInterval from '@/hooks/useInterval';
 
 export default function TypingController({
 	mazeGenerator,
@@ -67,34 +68,27 @@ export default function TypingController({
 		}
 	};
 
-	useEffect(() => {
-		if (startTime == null) {
-			return;
-		}
+	useInterval(
+		() => {
+			if (endTime) {
+				const totalTime = startTime
+					? (new Date().getTime() - startTime.getTime()) / 1000
+					: 0;
 
-		if (endTime) {
+				const newWpm = totalCorrectChars / 5 / (totalTime / 60);
+				setWpm(newWpm);
+				return;
+			}
+
 			const totalTime = startTime
 				? (new Date().getTime() - startTime.getTime()) / 1000
 				: 0;
 
 			const newWpm = totalCorrectChars / 5 / (totalTime / 60);
 			setWpm(newWpm);
-			return;
-		}
-
-		const interval = setInterval(() => {
-			const totalTime = startTime
-				? (new Date().getTime() - startTime.getTime()) / 1000
-				: 0;
-
-			const newWpm = totalCorrectChars / 5 / (totalTime / 60);
-			setWpm(newWpm);
-		}, 1000);
-
-		return () => {
-			clearInterval(interval);
-		};
-	}, [startTime, totalCorrectChars, endTime]);
+		},
+		startTime !== null && !isGoalReached ? 1000 : null,
+	);
 
 	const handleOnReset = (
 		word: string,
@@ -225,7 +219,6 @@ export default function TypingController({
 			currentWpm,
 			newTotalCorrectChars,
 		);
-		setWpm(currentWpm);
 	};
 
 	const handleCheckDirection = (
